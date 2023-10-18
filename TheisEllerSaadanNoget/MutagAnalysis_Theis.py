@@ -72,7 +72,7 @@ print(f'Number of test graphs: {len(test_dataset)}')
 
 
 
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, pin_memory=True)
+train_loader = DataLoader(train_dataset, batch_size=75, shuffle=True, pin_memory=True)
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, pin_memory=True)
 
 for step, data in enumerate(train_loader):
@@ -86,9 +86,11 @@ print(torch.__version__)
 
 print("Press 1 for old model, and other for new model.")
 if (input() == "1"):
+    print("You chose old model.")
     model = torch.load("graph_classification_model.pt")
 else:
-    model = GCN(hidden_channels=256, dataset = dataset)
+    print("You chose new model.")
+    model = GCN(hidden_channels=32, dataset = dataset)
 
 model.to(device=device)
 print(model)
@@ -97,24 +99,35 @@ print(model)
 
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 criterion = torch.nn.CrossEntropyLoss()
-
 
 
 
 def train():
     model.train()
-
+    loss_ = 0
+    correct = 0
+    i = 0
     for data in train_loader:  # Iterate in batches over the training dataset.
         data = data.to('cuda', non_blocking=True)
         out = model(data.x, data.edge_index, data.batch)  # Perform a single forward pass.
         loss = criterion(out, data.y)  # Compute the loss.
+        loss_ += loss.item()
         loss.backward()  # Derive gradients.
         optimizer.step()  # Update parameters based on gradients.
         optimizer.zero_grad()  # Clear gradients.
+        pred = out.argmax(dim=1)  # Use the class with highest probability.
+        
+        
+        correct += int((pred == data.y).sum())  # Check against ground-truth labels.
+        i+=1
+    #print(len(train_loader.dataset))
+    #print(f"correct: {correct}")
+    train_loss.append(loss_/ i)
+    train_accruracy.append(correct/len(train_loader.dataset))
 
-def test(loader, create_table=False):
+def test(loader):
     model.eval()
     correct = 0
     loss_ = 0
@@ -127,20 +140,25 @@ def test(loader, create_table=False):
         
         
         correct += int((pred == data.y).sum())  # Check against ground-truth labels.
+    #print("Here")
+    #print(len(loader.dataset))
     return correct / len(loader.dataset), loss_ / len(loader.dataset)  # Derive ratio of correct predictions.
 
 
-iterations = 171
-train_acc = []
+iterations = 1000
+train_accruracy = []
+train_loss = []
 test_acc = [0] * iterations
 test_loss = [0] * iterations
 
 for epoch in trange(0, iterations):
     train()
-    testresult = test(train_loader)
-    train_acc.append(testresult[0])
-    train_loss = testresult[1] 
-    test_acc[epoch], test_loss[epoch] = test(test_loader, create_table=True)
+
+
+#testresult = test(train_loader)
+#train_acc.append(testresult[0])
+#train_loss = testresult[1] 
+test_acc[epoch], test_loss[epoch] = test(test_loader)
 
 torch.save(model, "graph_classification_model.pt")
     
@@ -149,9 +167,14 @@ torch.save(model, "graph_classification_model.pt")
 x = np.array([i for i in range(iterations)])
 # corresponding y axis values
 
+print(len(x))
+print(len(train_loss))
+
 # plotting the points 
-plt.plot(x, test_acc, label="Accuracy")
-plt.plot(x, test_loss, label="Loss")
+
+#print(train_accruracy)
+plt.plot(x, train_accruracy, label="Accuracy")
+plt.plot(x, train_loss, label="Train Loss")
 
 plt.legend(loc="lower center")
 
