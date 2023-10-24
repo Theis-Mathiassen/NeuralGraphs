@@ -176,13 +176,13 @@ def hyperParameterTester(create_table=False, hc=HIDDEN_NODE_COUNT, learn=LEARNIN
 
             # Append actual and preddicted to respective array. Have to be converted to NumPy arrays in order to flatten them.
             # We flatten them as 1D arrays are required by SK in order to calculate and plot ROC AUC
-            #arrayLabel = np.array(data.y.to('cpu'))
-            #for value in arrayLabel.flatten():
-            #    returnData.train_labels.append(value)
+            arrayLabel = np.array(data.y.to('cpu'))
+            for value in arrayLabel.flatten():
+                returnData.train_labels.append(value)
 
-            #arrayCat = np.array(cat.to('cpu'))
-            #for value in arrayCat.flatten():
-            #    returnData.train_scores.append(value)
+            arrayCat = np.array(cat.to('cpu'))
+            for value in arrayCat.flatten():
+                returnData.train_scores.append(value)
         
         #tt.set_description("loss: %2f. accuracy %2f." % (loss, correct/len(train_loader.dataset)))
         returnData.train_losses.append(loss_/ i)
