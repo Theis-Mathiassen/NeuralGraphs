@@ -110,7 +110,7 @@ def train():
     correct = 0
     i = 0
     for data in train_loader:  # Iterate in batches over the training dataset.
-        data = data.to('cuda', non_blocking=True)
+        data = data.to(device, non_blocking=True)
         out = model(data.x, data.edge_index, data.batch)  # Perform a single forward pass.
         loss = criterion(out, data.y)  # Compute the loss.
         loss_ += loss.item()
