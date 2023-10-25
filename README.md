@@ -27,7 +27,7 @@ The hyperparameters can easily be adjusted for experimentation.
 
 ## Getting Started
 
-To use this project navigate to the [links](/Main/MutagGCN.ipynb) file, which contains the main code for the project. 
+To use this project navigate to the [MutagGCN](/Main/MutagGCN.ipynb) file, which contains the main code for the project. 
 After downloading it, it can be run and adjusted as desired.
 
 ### Prerequisites
