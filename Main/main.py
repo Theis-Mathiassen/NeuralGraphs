@@ -5,7 +5,7 @@ MANUAL_SEED = 12345
 HIDDEN_NODE_COUNT = 64
 DATASPLIT = 150
 BATCH_SIZE_TRAINING = 64
-BATCH_SIZE_TESTING = 1
+BATCH_SIZE_TESTING = 64
 
 
 import os
@@ -64,15 +64,6 @@ print(len(test_dataset))
 
 
 
-
-
-
-
-
-
-
-
-
 #gcn = GCN(in_features=dataset.num_node_features, hidden_channels=HIDDEN_NODE_COUNT)
 #gcn.to(device=device)
 loss_f = torch.nn.CrossEntropyLoss()
@@ -80,7 +71,7 @@ loss_f = torch.nn.CrossEntropyLoss()
 
 #model1 = BaseModel(gcn, loss_f, optimizer)
 
-hc_array = [5, 10, 20, 40, 64, 100] # Længde = 7
+hc_array = [5, 10]# 20, 40, 64, 100] # Længde = 7
 all_data_list = []
 
 
@@ -90,9 +81,9 @@ for i in range(0, len(hc_array)): # Laver 7 basis modeller der kan trænes og te
     gcn.to(device=device)
     base_model = BaseModel(gcn, loss_f, torch.optim.Adam(gcn.parameters(), lr=LEARNING_RATE)) 
     for epoch in trange(0, EPOCHS):
-        temp = train(base_model, train_loader, device)
-        temp_all_data.insert_train_data(temp)
-    temp_all_data.insert_test_data(test(base_model, test_loader, device))
+        temp_all_data.insert_train_data(train(base_model, train_loader, device))
+        temp_all_data.insert_test_data(test(base_model, test_loader, device))
+    
 
     all_data_list.append(temp_all_data)
   

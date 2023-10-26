@@ -26,14 +26,12 @@ def AvgCalculator(data, numChunks):
 
 
 # ROC AUC PLOT
-def plotROCAUC(labels, scores, title, ax):
+def plotROCAUC(ax, labels, probabilities, label, color):
     # roc_auc = roc_auc_score(labels, scores)
 
-    fpr, tpr, _ = metrics.roc_curve(labels,  scores)
-    auc = metrics.roc_auc_score(labels, scores)
-    ax.set_title(title)
-    ax.plot(fpr,tpr)
-    ax.legend(["auc="+str(round(auc, 2))], handlelength=0, handletextpad=0)
+    fpr, tpr, _ = metrics.roc_curve(labels,  probabilities)
+    auc = metrics.roc_auc_score(labels, probabilities)
+    ax.plot(fpr,tpr, c=color, label=label+"- AUC: {}".format(round(auc, 2)))
 
     # RocCurveDisplay.from_predictions(labels, scores)
 
@@ -41,9 +39,9 @@ def plotROCAUC(labels, scores, title, ax):
 
 
 def GraphPrettifier(ax: axes.Axes, title, xlabel, ylabel):
-    ax.set_title = title
-    ax.set_xlabel = xlabel
-    ax.set_ylabel = ylabel
+    ax.title.set_text(title)
+    ax.set_xlabel(xlabel=xlabel, fontsize=10)
+    ax.set_ylabel(ylabel=ylabel, fontsize=10)
     ax.axis('on')
     ax.set_facecolor('lightgray')
     ax.grid()
@@ -59,27 +57,33 @@ def PlotGraph(data, ax: axes.Axes, label, color = "black", cleanGraph = False, n
     ax.plot(X, data, c=color, label=label)
     
 def MultiPlotter(allData: list[AllData], paramArray, paramName):
-    color_array = np.array(["lightsalmon", "navy", "goldenrod", "aquamarine", "rosybrown", "darkgoldenrod", "cyan", "forestgreen", "wheat", "springgreen", "mediumpurple", "violet", "deeppink", "burlywood", "powderblue", "indigo", "azure", "chocolate", "saddlebrown", "linen", "chartreuse", "black", "floralwhite", "cornflowerblue", "fuchsia", "magenta", "orchid", "hotpink", "lightblue", "lime", "navajowhite", "royalblue", "teal", "ivory", "sienna", "sandybrown"], dtype=str)
+    color_array = np.array(["lightsalmon", "navy", "azure", "aquamarine", "rosybrown", "cyan", "forestgreen", "wheat", "springgreen", "mediumpurple", "violet", "deeppink", "burlywood", "powderblue", "indigo", "azure", "chocolate", "saddlebrown", "linen", "chartreuse", "black", "floralwhite", "cornflowerblue", "fuchsia", "magenta", "orchid", "hotpink", "lightblue", "lime", "navajowhite", "royalblue", "teal", "ivory", "sienna", "sandybrown"], dtype=str)
 
-
-
-    fig, ax = plt.subplots(2,2, figsize=(14,5)) # Initialize figure
+    fig, ax = plt.subplots(3,2, figsize=(21,10)) # Initialize figure
     i = 0
     for data in allData: # Plot training data accuracies & loss
         label = '{}: {}'.format(paramName, paramArray[i])
-        PlotGraph(data.train_accuracies, ax[0,0], label, color = np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
-        PlotGraph(data.train_losses, ax[0,1], label, color=np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
-        PlotGraph(data.test_accuracies, ax[1,0], label, color=np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
+        PlotGraph(data.train_accuracies, ax[0,0], label, color=color_array[i], cleanGraph=True, numChunks=40)
+        PlotGraph(data.test_accuracies, ax[0,1], label, color=color_array[i])
+        PlotGraph(data.train_losses, ax[1,0], label, color=color_array[i], cleanGraph=True, numChunks=40)
+        plotROCAUC(ax[2,0], data.train_labels, data.train_probability_estimates, label, color=color_array[i])
+        plotROCAUC(ax[2,1], data.test_labels, data.test_probability_estimates, label, color=color_array[i])
         i += 1
-    GraphPrettifier(ax[0], "Training: Accuracy over epochs", "# Epochs", "Accuracy")
-    GraphPrettifier(ax[1], "Training: Losses over epochs", "# Epochs", "Losses")
+    GraphPrettifier(ax[0,0], "Training: Accuracy over epochs", "# Epochs", "Accuracy")
+    GraphPrettifier(ax[0,1], "Testing: Accuracy over epochs", "# Epochs", "Accuracy")
+    GraphPrettifier(ax[1,0], "Testing: Accuracy", "", "Accuracy")
+    GraphPrettifier(ax[2,0], "Training: AUC ROC", "True Negative", "True Positive")
+    GraphPrettifier(ax[2,1], "Testing: AUC ROC", "True Negative", "True Positive")
+
     
 
     now = datetime.now()
 
     title = "Precision measurements using different values for {}. Profiled on {}".format(paramName, now.strftime("%d/%m/%y), %H:%M:%S"))
     fig.suptitle(title, fontsize=12, wrap=True)
-    fig.show()
+    fig.tight_layout(pad=2.0)
+
+    plt.show()
 
 # ACCURACY PLOT
 def plotAccuracy(losses, accuracies, title, ax):
