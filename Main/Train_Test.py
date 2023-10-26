@@ -43,7 +43,7 @@ def train(model_env: BaseModel, data_loader, device):
     return returnData
 
 
-def test(model_env: BaseModel, data_loader):
+def test(model_env: BaseModel, data_loader, device):
     model_env.model.eval()
     correct = 0
     loss_ = 0

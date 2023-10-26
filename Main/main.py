@@ -42,6 +42,7 @@ elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
     device = torch.device('cpu')
 else:
     device = torch.device('cpu')
+#device = torch.device('cpu')
 print(device)
 
 
@@ -72,12 +73,12 @@ print(len(test_dataset))
 
 
 
-gcn = GCN(in_features=dataset.num_node_features, hidden_channels=HIDDEN_NODE_COUNT)
+#gcn = GCN(in_features=dataset.num_node_features, hidden_channels=HIDDEN_NODE_COUNT)
+#gcn.to(device=device)
 loss_f = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(gcn.parameters(), lr=LEARNING_RATE)
+#optimizer = torch.optim.Adam(gcn.parameters(), lr=LEARNING_RATE)
 
-model1 = BaseModel(gcn, loss_f, optimizer)
-
+#model1 = BaseModel(gcn, loss_f, optimizer)
 
 hc_array = [5, 10, 20, 40, 64, 100] # Længde = 7
 all_data_list = []
@@ -85,12 +86,13 @@ all_data_list = []
 
 for i in range(0, len(hc_array)): # Laver 7 basis modeller der kan trænes og testes senere
     temp_all_data = AllData()
-    gcn = GCN(in_features=dataset.num_node_features, hidden_channels= hc_array[i]) # Gemmer i array, da jeg er usikker på om python passer by reference eller value???? 
+    gcn = GCN(in_features=dataset.num_node_features, hidden_channels= hc_array[i]) # Gemmer i array, da jeg er usikker på om python passer by reference eller value????
+    gcn.to(device=device)
     base_model = BaseModel(gcn, loss_f, torch.optim.Adam(gcn.parameters(), lr=LEARNING_RATE)) 
     for epoch in trange(0, EPOCHS):
-        temp = train(base_model, train_loader)
+        temp = train(base_model, train_loader, device)
         temp_all_data.insert_train_data(temp)
-        temp_all_data.insert_test_data(test(base_model, test_loader))
+        temp_all_data.insert_test_data(test(base_model, test_loader, device))
 
     all_data_list.append(temp_all_data)
   
