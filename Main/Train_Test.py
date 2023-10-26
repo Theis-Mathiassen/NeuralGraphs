@@ -27,7 +27,7 @@ def train(model_env: BaseModel, data_loader, device):
         i+=1
 
         # Append actual and preddicted to respective array. Have to be converted to NumPy arrays in order to flatten them.
-        # We flatten them as 1D arrays are required by SK in order to calculate and plot ROC AUC
+        # We flatten them as 1D arrays are required by SK in order to calculate and     plot ROC AUC
         #This is not going to change for each epoch, so computational power is wasted here...
         arrayLabel = np.array(data.y.to('cpu'))
         for value in arrayLabel.flatten():
@@ -36,6 +36,10 @@ def train(model_env: BaseModel, data_loader, device):
         arrayCat = np.array(cat.to('cpu'))
         for value in arrayCat.flatten():
             returnData.train_scores.append(value)
+        # Turn output tensor into numpy array
+        arrayPred = out.detach().cpu().numpy()
+        for value in enumerate(arrayPred):
+            returnData.train_probability_estimates.append(value[1][1])
 
     returnData.train_accuracies = (correct/len(data_loader.dataset))
     returnData.train_losses = (loss_/i)
@@ -66,9 +70,13 @@ def test(model_env: BaseModel, data_loader, device):
         for value in arrayLabel.flatten():
             returnData.test_labels.append(value)
 
-        arrayCat = np.array(cat.to('cpu'))
+        arrayCat = np.array(cat.to('cpu')) 
         for value in arrayCat.flatten():
             returnData.test_scores.append(value)
+
+        arrayPred = out.detach().cpu().numpy()
+        for value in enumerate(arrayPred):
+            returnData.test_probability_estimates.append(value[1][1])
 
     returnData.test_accuracies = (correct/len(data_loader.dataset))
     returnData.test_losses = (loss_/ i)
