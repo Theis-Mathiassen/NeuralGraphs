@@ -69,10 +69,10 @@ def MultiPlotter(allData: list[AllData], paramArray, paramName):
         label = '{}: {}'.format(paramName, paramArray[i])
         PlotGraph(data.train_accuracies, ax[0,0], label, color = np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
         PlotGraph(data.train_losses, ax[0,1], label, color=np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
-        PlotGraph(data.test_accuracies, ax[1,0], label, color=np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
+        #PlotGraph(data.test_accuracies, ax[1,0], label, color=np.random.choice(color_array, replace=False), cleanGraph=True, numChunks=40)
         i += 1
-    GraphPrettifier(ax[0], "Training: Accuracy over epochs", "# Epochs", "Accuracy")
-    GraphPrettifier(ax[1], "Training: Losses over epochs", "# Epochs", "Losses")
+    GraphPrettifier(ax[0,0], "Training: Accuracy over epochs", "# Epochs", "Accuracy")
+    GraphPrettifier(ax[0,1], "Training: Losses over epochs", "# Epochs", "Losses")
     
 
     now = datetime.now()

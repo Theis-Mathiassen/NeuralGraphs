@@ -1,5 +1,5 @@
 # Constants
-EPOCHS = 300
+EPOCHS = 30
 LEARNING_RATE = 0.01
 MANUAL_SEED = 12345
 HIDDEN_NODE_COUNT = 64
@@ -14,6 +14,8 @@ import torch
 from torch_geometric.datasets import TUDataset
 from torch_geometric.utils import to_networkx
 from torch_geometric.loader import DataLoader
+import matplotlib.pyplot as plt
+
 
 from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
@@ -97,3 +99,5 @@ for i in range(0, len(hc_array)): # Laver 7 basis modeller der kan trænes og te
     all_data_list.append(temp_all_data)
   
 MultiPlotter(all_data_list, hc_array, "Hidden node count")
+
+plt.show()
