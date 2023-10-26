@@ -24,7 +24,7 @@ from Grid_Search import grid_search
 
 from tqdm import trange
 
-
+# importing MUTAG
 dataset = TUDataset(root='dataset/Mutag', name='MUTAG')
 
 data_details = {
@@ -35,9 +35,9 @@ data_details = {
     "num_edge_labels": dataset.num_edge_labels,
 }
 
-
 print(data_details)
 
+#  checks if a GPU is available for use w/ pytorch
 if torch.cuda.is_available():
     device = torch.device('cuda')
 else:
@@ -45,14 +45,13 @@ else:
 #device = torch.device('cpu')
 print(device)
 
-
-torch.manual_seed(12345)
+# Set seed: manual
+torch.manual_seed(MANUAL_SEED)
 dataset = dataset.shuffle()
 
 
-# Allocate for training
+# Allocate data for training and remainder for testing 
 train_dataset = dataset[:DATASPLIT]
-# Allocate the remainder for testing
 test_dataset = dataset[DATASPLIT:]
 
 # Define the data loaders. Used later for training, can be ignored for now
