@@ -92,7 +92,7 @@ for i in range(0, len(hc_array)): # Laver 7 basis modeller der kan trænes og te
     for epoch in trange(0, EPOCHS):
         temp = train(base_model, train_loader, device)
         temp_all_data.insert_train_data(temp)
-        temp_all_data.insert_test_data(test(base_model, test_loader, device))
+    temp_all_data.insert_test_data(test(base_model, test_loader, device))
 
     all_data_list.append(temp_all_data)
   

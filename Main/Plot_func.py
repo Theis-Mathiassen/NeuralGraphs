@@ -50,11 +50,11 @@ def GraphPrettifier(ax: axes.Axes, title, xlabel, ylabel):
     ax.legend()
 
 def PlotGraph(data, ax: axes.Axes, label, color = "black", cleanGraph = False, numChunks = 20):
-    if not cleanGraph:
-        X = np.arange(0, len(data))
-    else:
+    if cleanGraph and numChunks < len(data):
         X = np.arange(0, len(data), len(data)//numChunks)
         data = AvgCalculator(data, numChunks)
+    else:
+        X = np.arange(0, len(data))
 
     ax.plot(X, data, c=color, label=label)
     
