@@ -9,8 +9,9 @@ def train(model_env: BaseModel, data_loader, device):
     i = 0
     returnData = TrainData()
 
-    for data in data_loader:  # Iterates the batches. We declared each batch to be of size 64
+    for data in data_loader:  # Iterates the batches. We declared each batch to be of size 64 (BATCH_SIZE_)
         data = data.to(device, non_blocking=True)
+
         # Calculate output, and get the maximum of those in order to obtain the predicted value
         out = model_env.model(data.x, data.edge_index, data.batch)
         cat = torch.argmax(out, dim=1)
@@ -18,17 +19,18 @@ def train(model_env: BaseModel, data_loader, device):
         correct += int((cat == data.y).sum())  # Check against ground-truth labels.
         
         loss = model_env.loss_function(out, data.y)
-        loss_ += loss.item()
+        loss_ += loss.item() # append loss
         
+        # backpropagation
         loss.backward()
         model_env.optimizer.step()
         model_env.optimizer.zero_grad()
 
         i+=1
 
-        # Append actual and preddicted to respective array. Have to be converted to NumPy arrays in order to flatten them.
-        # We flatten them as 1D arrays are required by SK in order to calculate and     plot ROC AUC
-        #This is not going to change for each epoch, so computational power is wasted here...
+        # Append actual and preddicted value to respective array. Have to be converted to NumPy arrays in order to flatten them.
+        # We flatten them as 1D arrays are required by SK in order to calculate and plot ROC AUC
+        #   This is not going to change for each epoch, so computational power is wasted here...
         arrayLabel = np.array(data.y.to('cpu'))
         for value in arrayLabel.flatten():
             returnData.train_labels.append(value)
@@ -37,6 +39,7 @@ def train(model_env: BaseModel, data_loader, device):
         for value in arrayCat.flatten():
             #Rename train_Scores to train_predicted_labels
             returnData.train_scores.append(value)
+
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
@@ -47,7 +50,7 @@ def train(model_env: BaseModel, data_loader, device):
     #tt.set_description("loss: %2f. accuracy %2f." % (loss, correct/len(train_loader.dataset)))
     return returnData
 
-
+# similar to test, but without bacpropagation (gradients)
 def test(model_env: BaseModel, data_loader, device):
     model_env.model.eval()
     correct = 0
@@ -75,6 +78,7 @@ def test(model_env: BaseModel, data_loader, device):
         for value in arrayCat.flatten():
             returnData.test_scores.append(value)
 
+        # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
             returnData.test_probability_estimates.append(value[1][1])
