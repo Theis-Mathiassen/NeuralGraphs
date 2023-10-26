@@ -39,7 +39,7 @@ def train(model_env: BaseModel, data_loader, device):
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
-            returnData.train_probability_estimates.append(value[1])
+            returnData.train_probability_estimates.append(value[1][1])
 
     returnData.train_accuracies = (correct/len(data_loader.dataset))
     returnData.train_losses = (loss_/i)
@@ -76,7 +76,7 @@ def test(model_env: BaseModel, data_loader, device):
 
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
-            returnData.test_probability_estimates.append(value[1])
+            returnData.test_probability_estimates.append(value[1][1])
 
     returnData.test_accuracies = (correct/len(data_loader.dataset))
     returnData.test_losses = (loss_/ i)

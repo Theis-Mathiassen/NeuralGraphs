@@ -45,7 +45,12 @@ def GraphPrettifier(ax: axes.Axes, title, xlabel, ylabel):
     ax.axis('on')
     ax.set_facecolor('lightgray')
     ax.grid()
-    ax.legend()
+    legend = ax.legend()
+    legend.get_frame().set_alpha(None)
+    legend.get_frame().set_facecolor((0,0,1,0.1))
+
+    
+
 
 def PlotGraph(data, ax: axes.Axes, label, color = "black", cleanGraph = False, numChunks = 20):
     if cleanGraph and numChunks < len(data):
@@ -63,15 +68,17 @@ def MultiPlotter(allData: list[AllData], paramArray, paramName):
     i = 0
     for data in allData: # Plot training data accuracies & loss
         label = '{}: {}'.format(paramName, paramArray[i])
-        PlotGraph(data.train_accuracies, ax[0,0], label, color=color_array[i], cleanGraph=True, numChunks=40)
-        PlotGraph(data.test_accuracies, ax[0,1], label, color=color_array[i])
-        PlotGraph(data.train_losses, ax[1,0], label, color=color_array[i], cleanGraph=True, numChunks=40)
+        PlotGraph(data.train_accuracies, ax[0,0], label, color=color_array[i], cleanGraph=True, numChunks=20)
+        PlotGraph(data.test_accuracies, ax[0,1], label, color=color_array[i], cleanGraph=True, numChunks=20)
+        PlotGraph(data.train_losses, ax[1,0], label, color=color_array[i], cleanGraph=True, numChunks=20)
+        PlotGraph(data.test_losses, ax[1,1], label, color=color_array[i], cleanGraph=True, numChunks=20)
         plotROCAUC(ax[2,0], data.train_labels, data.train_probability_estimates, label, color=color_array[i])
         plotROCAUC(ax[2,1], data.test_labels, data.test_probability_estimates, label, color=color_array[i])
         i += 1
     GraphPrettifier(ax[0,0], "Training: Accuracy over epochs", "# Epochs", "Accuracy")
     GraphPrettifier(ax[0,1], "Testing: Accuracy over epochs", "# Epochs", "Accuracy")
-    GraphPrettifier(ax[1,0], "Testing: Accuracy", "", "Accuracy")
+    GraphPrettifier(ax[1,0], "Training: Loss", "# Epochs", "Loss")
+    GraphPrettifier(ax[1,1], "Testing: Loss", "# Epochs", "Loss")
     GraphPrettifier(ax[2,0], "Training: AUC ROC", "True Negative", "True Positive")
     GraphPrettifier(ax[2,1], "Testing: AUC ROC", "True Negative", "True Positive")
 
