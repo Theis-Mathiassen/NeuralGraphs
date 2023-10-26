@@ -5,13 +5,17 @@ import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool
 
-#Model definition
+# constants
+MANUAL_SEED = 12345
+
+# graph convolutional network obj
 class GCN(torch.nn.Module):
     def __init__(self, hidden_channels, dropout_rate, learning_rate, in_features=7, outfeatures = 2):
         super(GCN, self).__init__()
-        torch.manual_seed(12345)
+        torch.manual_seed(MANUAL_SEED)
         self.dropout_rate = dropout_rate
         self.learning_rate = learning_rate
+        
         # Input layer
         self.conv1 = GCNConv(in_features, hidden_channels)
 
@@ -24,6 +28,7 @@ class GCN(torch.nn.Module):
         # Output layer
         self.lin = Linear(hidden_channels, outfeatures)
 
+    # Foward propagation
     def forward(self, x, edge_index, batch):
         # 1. Obtain node embeddings
         x = self.conv1(x, edge_index)
@@ -43,9 +48,9 @@ class GCN(torch.nn.Module):
         x = F.dropout(x, p=self.dropout_rate, training=self.training)
         x = self.lin(x)
 
-        return x
+        return x 
 
-
+# model obj
 class BaseModel():
     def __init__(self, model: GCN, loss, optim):
         self.model = model
@@ -85,12 +90,14 @@ class AllData():
         self.test_scores = []
         self.test_labels = []
         self.test_probability_estimates = []
+
     def insert_train_data (self, data: TrainData):
         self.train_accuracies.append(data.train_accuracies)
         self.train_losses.append(data.train_losses)
         self.train_labels.extend(data.train_labels)
         self.train_scores.extend(data.train_scores)
         self.train_probability_estimates.extend(data.train_probability_estimates)
+        
     def insert_test_data (self, data: TestData):
         self.test_accuracies.append(data.test_accuracy)
         self.test_losses.append(data.test_losses)
