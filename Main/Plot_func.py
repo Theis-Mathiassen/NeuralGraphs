@@ -172,7 +172,7 @@ def AndreasPlot(trainData: TrainData, testData: TestData, MANUAL_SEED, DATASPLIT
         if(plot_accuracy):
             #ax01 = ax[1, 0]
             ax01 = plt.subplot(gs[1, 1])
-            plotAccuracy(testData.test_losses, testData.test_accuracies, "Testing: Accuracy & Loss", ax01)
+            plotAccuracy(testData.test_losses, testData.test_accuracy, "Testing: Accuracy & Loss", ax01)
 
         if(plot_rocauc):
             #ax11 = ax[1, 1]

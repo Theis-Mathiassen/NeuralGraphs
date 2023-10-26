@@ -7,9 +7,11 @@ from torch_geometric.nn import global_mean_pool
 
 #Model definition
 class GCN(torch.nn.Module):
-    def __init__(self, in_features=7, hidden_channels=64, outfeatures = 2):
+    def __init__(self, hidden_channels, dropout_rate, learning_rate, in_features=7, outfeatures = 2):
         super(GCN, self).__init__()
-
+        torch.manual_seed(12345)
+        self.dropout_rate = dropout_rate
+        self.learning_rate = learning_rate
         # Input layer
         self.conv1 = GCNConv(in_features, hidden_channels)
 
@@ -38,7 +40,7 @@ class GCN(torch.nn.Module):
         x = global_mean_pool(x, batch)  # [batch_size, hidden_channels]
 
         # 3. Apply a final classifier
-        x = F.dropout(x, p=0.5, training=self.training)
+        x = F.dropout(x, p=self.dropout_rate, training=self.training)
         x = self.lin(x)
 
         return x
@@ -64,7 +66,7 @@ class TrainData():
 class TestData():
     def __init__(self):
         self.test_losses = 0 
-        self.test_accuracies = 0
+        self.test_accuracy = 0
         self.test_scores = []
         self.test_labels = []
         self.test_probability_estimates = []
@@ -90,7 +92,7 @@ class AllData():
         self.train_scores.extend(data.train_scores)
         self.train_probability_estimates.extend(data.train_probability_estimates)
     def insert_test_data (self, data: TestData):
-        self.test_accuracies.append(data.test_accuracies)
+        self.test_accuracies.append(data.test_accuracy)
         self.test_losses.append(data.test_losses)
         self.test_labels.extend(data.test_labels)
         self.test_scores.extend(data.test_scores)

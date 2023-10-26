@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
 from Plot_func import MultiPlotter
+from Grid_Search import grid_search
 
 from tqdm import trange
 
@@ -39,16 +40,13 @@ print(data_details)
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
-elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-    # MPS is currently slower than CPU due to missing int64 min/max ops
-    device = torch.device('cpu')
 else:
     device = torch.device('cpu')
 #device = torch.device('cpu')
 print(device)
 
 
-
+torch.manual_seed(12345)
 dataset = dataset.shuffle()
 
 
@@ -65,12 +63,12 @@ print(len(train_dataset))
 print(len(test_dataset))
 
 
-#gcn = GCN(in_features=dataset.num_node_features, hidden_channels=HIDDEN_NODE_COUNT)
-#gcn.to(device=device)
-loss_f = torch.nn.CrossEntropyLoss()
-#optimizer = torch.optim.Adam(gcn.parameters(), lr=LEARNING_RATE)
+grid_search(train_loader, test_loader, device)
 
-#model1 = BaseModel(gcn, loss_f, optimizer)
+
+""" 
+
+loss_f = torch.nn.CrossEntropyLoss()
 
 hc_array = [5, 10, 20, 40, 64, 100] # Længde = 7
 lr_array = [0.1, 0.01, 0.005, 0.003, 0.001] 
@@ -92,3 +90,4 @@ for i in range(0, len(lr_array)): # Laver 7 basis modeller der kan trænes og te
 MultiPlotter(all_data_list, lr_array, "Learning Rate")
 
 plt.show()
+ """

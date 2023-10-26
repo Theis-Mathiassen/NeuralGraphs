@@ -35,6 +35,7 @@ def train(model_env: BaseModel, data_loader, device):
 
         arrayCat = np.array(cat.to('cpu'))
         for value in arrayCat.flatten():
+            #Rename train_Scores to train_predicted_labels
             returnData.train_scores.append(value)
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
@@ -78,7 +79,7 @@ def test(model_env: BaseModel, data_loader, device):
         for value in enumerate(arrayPred):
             returnData.test_probability_estimates.append(value[1][1])
 
-    returnData.test_accuracies = (correct/len(data_loader.dataset))
+    returnData.test_accuracy = (correct/len(data_loader.dataset))
     returnData.test_losses = (loss_/ i)
     
     return returnData
