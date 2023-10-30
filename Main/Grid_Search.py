@@ -16,8 +16,9 @@ EPOCHS = 300
 # INPUT
 #   train_loader, test_loader : dataloader
 #   device : torch.device
+#   param_grid : library(str->list) that contains 'dropout_rate', 'hidden_channels', 'learning_rate'
 # -----
-def grid_search (train_loader, test_loader, device):
+def grid_search (train_loader, test_loader, device, param_grid):
     # Initialize variables to keep track of the best model and its accuracy
     best_model = None
     best_epoch_accuracy = 0.0
@@ -29,18 +30,16 @@ def grid_search (train_loader, test_loader, device):
         'learning_rate': [0.1, 0.01, 0.005],
     } """
 
-    # parameter grid - set of hyper parameters and corresponding ranges or values
-    param_grid = {
-        'dropout_rate': [0.25, 0.75],
-        'hidden_channels': [ 32, 64],
-        'learning_rate': [0.01]
-    }
-
     # iterates over each item defined in param_grid
     for params in ParameterGrid(param_grid):
 
         gridModel = GCN(hidden_channels=params["hidden_channels"], dropout_rate=params["dropout_rate"], learning_rate=params["learning_rate"])
         gridModel.to(device)
+
+        #Leaving this as food for thought
+        #if(params[optimizer].lower() == 'sgd'): optimizer = torch.optim.SGD(gridModel.parameters(), lr=gridModel.learning_rate)
+        #elif(params[optimizer].lower() == 'adam'): optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
+
         optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
         loss_function = torch.nn.CrossEntropyLoss()
         baseModel = BaseModel(gridModel, loss_function, optimizer)
