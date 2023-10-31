@@ -4,14 +4,11 @@ import torch
 from Classes import GCN, BaseModel, EvaluationMetricsData
 from Train_Test import train, test
 from tqdm import trange
-import random
+from torch_geometric.loader import DataLoader
 
 from sklearn.model_selection import train_test_split
 
-
-# constants
-EPOCHS = 300
-
+DATASPLIT = 150
 
 # -----
 # INPUT
@@ -19,7 +16,7 @@ EPOCHS = 300
 #   device : torch.device
 #   param_grid : library(str->list) that contains 'dropout_rate', 'hidden_channels', 'learning_rate'
 # -----
-def random_search (dataset, device, param_grid, iterations):
+def random_search (dataset, device, param_grid):
     # Initialize variables to keep track of the best model and its accuracy
     # Testing for accuracy and F1 Score
     best_model_accuracy = None
@@ -50,7 +47,6 @@ def random_search (dataset, device, param_grid, iterations):
     print(len(test_dataset))
 
     # iterates over each item defined in param_grid
-    for x in
     for params in ParameterGrid(param_grid):
         
         # Define the data loaders, this uses batch_size
@@ -88,7 +84,7 @@ def random_search (dataset, device, param_grid, iterations):
             best_epoch_accuracy = test_data.test_accuracy
             best_model_accuracy = gridModel
             best_params_accuracy = params
-        if eval_data.f1 > best_epoch_f1
+        if eval_data.f1 > best_epoch_f1:
             best_epoch_f1 = eval_data.f1
             best_model_f1 = gridModel
             best_params_f1 = params
@@ -97,4 +93,5 @@ def random_search (dataset, device, param_grid, iterations):
 
 
         
-    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model, best_params))
+    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model_accuracy, best_params_accuracy))
+

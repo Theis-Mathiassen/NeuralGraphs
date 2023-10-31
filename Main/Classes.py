@@ -3,7 +3,7 @@ import torch
 from torch.nn import Linear
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
-from torch_geometric.nn import global_mean_pool, global_sum_pool, global_max_pool
+from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_pool
 from sklearn import metrics #Used For ROC-AUC
 
 # constants
@@ -16,12 +16,14 @@ class GCN(torch.nn.Module):
         torch.manual_seed(MANUAL_SEED)
         self.dropout_rate = dropout_rate
         self.learning_rate = learning_rate
+        self.activation_function = activation_function
+        self.pooling_algorithm = pooling_algorithm
         
         # Input layer
         self.conv1 = GCNConv(in_features, hidden_channels)
 
         # Hidden layers
-        self.hidden_layers = [GCNConv(hidden_channels, hidden_channels] * amount_of_layers
+        self.hidden_layers = [GCNConv(hidden_channels, hidden_channels)] * amount_of_layers
         #self.conv2 = GCNConv(hidden_channels, hidden_channels)
         #self.conv3 = GCNConv(hidden_channels, hidden_channels)
         #self.conv4 = GCNConv(hidden_channels, hidden_channels)
@@ -36,9 +38,9 @@ class GCN(torch.nn.Module):
         x = self.conv1(x, edge_index)
         for layer in self.hidden_layers:
             #Switch dependent on activation function key string
-            if activation_function.lower() == "relu":
+            if self.activation_function.lower() == "relu":
                 x = x.relu()
-            elif activation_function.lower() == "sigmoid":
+            elif self.activation_function.lower() == "sigmoid":
                 x = x.sigmoid()
 
             layer(x, edge_index)
@@ -54,9 +56,9 @@ class GCN(torch.nn.Module):
         #x = self.conv5(x, edge_index)
 
         # 2. Readout layer
-        if pooling_algorithm.lower() == 'mean' : x = global_mean_pool(x, batch)
-        elif pooling_algorithm.lower() == 'sum' : x = global_sum_pool(x, batch)
-        elif pooling_algorithm.lower() == 'max' : x = global_max_pool(x, batch)
+        if self.pooling_algorithm.lower() == 'mean' : x = global_mean_pool(x, batch)
+        elif self.pooling_algorithm.lower() == 'sum' : x = global_add_pool(x, batch)
+        elif self.pooling_algorithm.lower() == 'max' : x = global_max_pool(x, batch)
 
         #x = global_mean_pool(x, batch)  # [batch_size, hidden_channels]
 
@@ -95,7 +97,7 @@ class TestData():
 # Data covering different evaluation metrics based on input TestData
 class EvaluationMetricsData():
     def __init__(self, TestData):
-        self.accuracy = TestData.accuracy
+        self.accuracy = TestData.test_accuracy
         self.TP = 0
         self.TF = 0
         self.FP = 0
@@ -110,7 +112,7 @@ class EvaluationMetricsData():
                     self.TP += 1
                 else:
                     self.FN += 1
-            elif TestData.test_labels[count][count] == 0:     #If graph is false
+            elif TestData.test_labels[count] == 0:     #If graph is false
                 if TestData.test_labels[count] == TestData.test_scores[count]: 
                     self.TF += 1
                 else:
@@ -127,7 +129,7 @@ class EvaluationMetricsData():
         self.f1 = 2 * self.PREC * self.TPR / (self.PREC + self.TPR)
 
         #AUC ROC and PR AUC
-        self.auc = metrics.roc_auc_score(TestData.labels, TestData.probabilities)
+        self.auc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
                      
     
 

@@ -70,10 +70,12 @@ param_grid = {
     'dropout_rate': [0.25, 0.75],
     'hidden_channels': [ 32, 64],
     'learning_rate': [0.01],
-    'batch_size' : [1,64],
-    'epochs' : [150, 300],
-    'optimizer' : ['adam', 'sgd'],        #String key
-    'activation_function' : ['relu', 'sigmoid']
+    'batch_size' : [1, 64],
+    'epochs' : [5],
+    'amount_of_layers' : [2, 3],
+    'optimizer' : ['adam'],        #String key
+    'activation_function' : ['relu'],
+    'pooling_algorithm' : ['mean', 'sum', 'max']
 }
 
 grid_search(dataset, device, param_grid)

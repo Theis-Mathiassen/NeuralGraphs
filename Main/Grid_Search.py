@@ -4,8 +4,11 @@ import torch
 from Classes import GCN, BaseModel, EvaluationMetricsData
 from Train_Test import train, test
 from tqdm import trange
+from torch_geometric.loader import DataLoader
 
 from sklearn.model_selection import train_test_split
+
+DATASPLIT = 150
 
 # -----
 # INPUT
@@ -47,8 +50,8 @@ def grid_search (dataset, device, param_grid):
     for params in ParameterGrid(param_grid):
         
         # Define the data loaders, this uses batch_size
-        train_loader = DataLoader(dataset=train_dataset, batch_size=params[batch_size], shuffle=True)
-        test_loader = DataLoader(dataset=test_dataset, batch_size=params[batch_size], shuffle=False)
+        train_loader = DataLoader(dataset=train_dataset, batch_size=params["batch_size"], shuffle=True)
+        test_loader = DataLoader(dataset=test_dataset, batch_size=params["batch_size"], shuffle=False)
 
         gridModel = GCN(hidden_channels=params["hidden_channels"], dropout_rate=params["dropout_rate"], learning_rate=params["learning_rate"], 
                         activation_function=params["activation_function"], amount_of_layers=params["amount_of_layers"], pooling_algorithm=params["pooling_algorithm"])
@@ -56,15 +59,15 @@ def grid_search (dataset, device, param_grid):
 
         #Deciding which optimizer to use
         optimizer = None
-        if(params[optimizer].lower() == 'sgd'): optimizer = torch.optim.SGD(gridModel.parameters(), lr=gridModel.learning_rate)
-        elif(params[optimizer].lower() == 'adam'): optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
+        if(params["optimizer"].lower() == 'sgd'): optimizer = torch.optim.SGD(gridModel.parameters(), lr=gridModel.learning_rate)
+        elif(params["optimizer"].lower() == 'adam'): optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
         #optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
 
         loss_function = torch.nn.CrossEntropyLoss()
         baseModel = BaseModel(gridModel, loss_function, optimizer)
 
 
-        for epoch in trange(0, params[epochs]):
+        for epoch in trange(0, params["epochs"]):
             # TRAIN
             train_data = train(baseModel, train_loader, device)
             
@@ -81,7 +84,7 @@ def grid_search (dataset, device, param_grid):
             best_epoch_accuracy = test_data.test_accuracy
             best_model_accuracy = gridModel
             best_params_accuracy = params
-        if eval_data.f1 > best_epoch_f1
+        if eval_data.f1 > best_epoch_f1:
             best_epoch_f1 = eval_data.f1
             best_model_f1 = gridModel
             best_params_f1 = params
@@ -90,5 +93,5 @@ def grid_search (dataset, device, param_grid):
 
 
         
-    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model, best_params))
+    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model_accuracy, best_params_accuracy))
 
