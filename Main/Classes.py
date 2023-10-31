@@ -4,6 +4,7 @@ from torch.nn import Linear
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool
+from sklearn import metrics #Used For ROC-AUC
 
 # constants
 MANUAL_SEED = 12345
@@ -72,9 +73,48 @@ class TestData():
     def __init__(self):
         self.test_losses = 0 
         self.test_accuracy = 0
-        self.test_scores = []
-        self.test_labels = []
+        self.test_scores = []       #Model Guesses
+        self.test_labels = []       #Truths
         self.test_probability_estimates = []
+
+# Data covering different evaluation metrics based on input TestData
+class EvaluationMetricsData():
+    def __init__(self, TestData):
+        self.accuracy = TestData.accuracy
+        self.TP = 0
+        self.TF = 0
+        self.FP = 0
+        self.FN = 0
+
+        #Calculate True positive, true negative, false positive, false negative
+        amountOfLabels = len(TestData.test_labels)
+
+        for count in range(amountOfLabels): 
+            if TestData.test_labels[count] == 1:       #If graph is true
+                if TestData.test_labels[count] == TestData.test_scores[count]: 
+                    self.TP += 1
+                else:
+                    self.FN += 1
+            elif TestData.test_labels[count][count] == 0:     #If graph is false
+                if TestData.test_labels[count] == TestData.test_scores[count]: 
+                    self.TF += 1
+                else:
+                    self.FP += 1
+                self.TP = 0
+        self.TP = self.TP / amountOfLabels
+        self.TF = self.TF / amountOfLabels
+        self.FP = self.FP / amountOfLabels
+        self.FN = self.FN / amountOfLabels
+
+        self.TPR = self.TP / (self.TP+self.FN)  #Sensitivity, Recall, true positive rate
+        self.FPR = 1-self.TPR                   #false positive rate
+        self.PREC = self.TP / (self.TP + self.FP) #Precision
+        self.f1 = 2 * self.PREC * self.TPR / (self.PREC + self.TPR)
+
+        #AUC ROC and PR AUC
+        self.auc = metrics.roc_auc_score(TestData.labels, TestData.probabilities)
+                     
+    
 
 # All data from a given set of hyperparameters.
 # Data passed to plotting functions

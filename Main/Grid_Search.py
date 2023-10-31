@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import ParameterGrid
 import torch
-from Classes import GCN, BaseModel
+from Classes import GCN, BaseModel, EvaluationMetricsData
 from Train_Test import train, test
 from tqdm import trange
 
@@ -20,9 +20,15 @@ EPOCHS = 300
 # -----
 def grid_search (train_loader, test_loader, device, param_grid):
     # Initialize variables to keep track of the best model and its accuracy
-    best_model = None
+    # Testing for accuracy and F1 Score
+    best_model_accuracy = None
     best_epoch_accuracy = 0.0
-    best_params = None
+    best_params_accuracy = None
+
+    best_model_f1 = None
+    best_epoch_f1 = 0.0
+    best_params_f1 = None
+
 
     """   param_grid = {
         'dropout_rate': [0.25, 0.5, 0.75],
@@ -55,13 +61,21 @@ def grid_search (train_loader, test_loader, device, param_grid):
         #avg_epoch_loss = epoch_loss / len(test_loader)
         #avg_epoch_accuracy = epoch_accuracy / len(test_loader)
         #test_accuracies_grid.append(avg_epoch_accuracy)
+        eval_data = EvaluationMetricsData(test_data)
 
-
-        print("Parameter configuration results:\n Configuration: {}\n Accuracy: {}.\n".format(params, test_data.test_accuracy))
+        print("Parameter configuration results:\n Configuration: {}\n Accuracy: {}.F1: {}.\n".format(params, test_data.test_accuracy, eval_data.f1))
         if test_data.test_accuracy > best_epoch_accuracy:
             best_epoch_accuracy = test_data.test_accuracy
-            best_model = gridModel
-            best_params = params
+            best_model_accuracy = gridModel
+            best_params_accuracy = params
+        if eval_data.f1 > best_epoch_f1
+            best_epoch_f1 = eval_data.f1
+            best_model_f1 = gridModel
+            best_params_f1 = params
+        
+            
 
+
+        
     print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model, best_params))
 
