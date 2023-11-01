@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import ParameterGrid
 import torch
-from Classes import GCN, BaseModel, EvaluationMetricsData
+from Classes import GCN, BaseModel, EvaluationMetricsData, StoredModel
 from Train_Test import train, test
 from tqdm import trange
 from torch_geometric.loader import DataLoader
@@ -18,7 +18,14 @@ DATASPLIT = 150
 # -----
 def grid_search (dataset, device, param_grid):
     # Initialize variables to keep track of the best model and its accuracy
-    # Testing for accuracy and F1 Score
+    # Testing for test accuracy, f1 score, auc-roc, and auc-pr
+    
+    #StoredModel for each of the evalutationMetrics
+    best_accuracy = StoredModel()
+    best_f1 = StoredModel()
+    best_roc = StoredModel()
+    best_pr = StoredModel()
+    
     best_model_accuracy = None
     best_epoch_accuracy = 0.0
     best_params_accuracy = None
@@ -26,6 +33,14 @@ def grid_search (dataset, device, param_grid):
     best_model_f1 = None
     best_epoch_f1 = 0.0
     best_params_f1 = None
+    
+    best_model_roc = None
+    best_epoch_roc = 0.0
+    best_params_roc = None
+    
+    best_model_pr = None
+    best_epoch_pr = 0.0
+    best_params_pr = None
 
     """   param_grid = {
         'dropout_rate': [0.25, 0.5, 0.75],
@@ -61,7 +76,8 @@ def grid_search (dataset, device, param_grid):
         optimizer = None
         if(params["optimizer"].lower() == 'sgd'): optimizer = torch.optim.SGD(gridModel.parameters(), lr=gridModel.learning_rate)
         elif(params["optimizer"].lower() == 'adam'): optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
-        #optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
+        elif(params["optimizer"].lower() == 'rmsprop'): optimizer = torch.optim.RMSprop(gridModel.parameters(), lr=gridModel.learning_rate)
+        else : raise Exception("Invalid optimizer name: " + str(params["optimizer"]))
 
         loss_function = torch.nn.CrossEntropyLoss()
         baseModel = BaseModel(gridModel, loss_function, optimizer)
@@ -77,21 +93,28 @@ def grid_search (dataset, device, param_grid):
         #avg_epoch_loss = epoch_loss / len(test_loader)
         #avg_epoch_accuracy = epoch_accuracy / len(test_loader)
         #test_accuracies_grid.append(avg_epoch_accuracy)
+        
+        #Get evaluation data from test_data
         eval_data = EvaluationMetricsData(test_data)
 
-        print("Parameter configuration results:\n Configuration: {}\n Accuracy: {}.F1: {}.\n".format(params, test_data.test_accuracy, eval_data.f1))
-        if test_data.test_accuracy > best_epoch_accuracy:
-            best_epoch_accuracy = test_data.test_accuracy
-            best_model_accuracy = gridModel
-            best_params_accuracy = params
-        if eval_data.f1 > best_epoch_f1:
-            best_epoch_f1 = eval_data.f1
-            best_model_f1 = gridModel
-            best_params_f1 = params
+        #Print out results and potentially best options
+        print("Parameter configuration results:\n Configuration: {}\n Accuracy: {}.\n F1: {}.\n AUC ROC: {}.\n AUC PR: {}.\n".format(
+            params, test_data.test_accuracy, eval_data.f1, eval_data.roc, eval_data.pr))
         
+        #Update best options if model outperforms. The update function replaces storedValues
+        if(test_data.test_accuracy > best_accuracy.evalutation_metric):
+            best_accuracy.update(test_data.test_accuracy, gridModel, params)
+        
+        if(eval_data.f1 > best_f1.evalutation_metric):
+            best_f1.update(eval_data.f1, gridModel, params)
             
+        if(eval_data.roc > best_roc.evalutation_metric):
+            best_roc.update(eval_data.roc, gridModel, params)
+            
+        if(eval_data.pr > best_pr.evalutation_metric):
+            best_pr.update(eval_data.roc, gridModel, params)
 
-
-        
-    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_epoch_accuracy, best_model_accuracy, best_params_accuracy))
-
+    print("Best accuracy: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_accuracy.evalutation_metric, best_accuracy.model, best_accuracy.params))
+    print("Best F1: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_f1.evalutation_metric, best_f1.model, best_f1.params))
+    print("Best AUC ROC: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_roc.evalutation_metric, best_roc.model, best_roc.params))
+    print("Best AUC PR: {}.\n Model used: {}.\n With parameter configuration: {}".format(best_pr.evalutation_metric, best_pr.model, best_pr.params))

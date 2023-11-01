@@ -1,10 +1,12 @@
 #Imports
 import torch
-from torch.nn import Linear
+from torch.nn import Linear, ReLU, Sigmoid, Tanh
 import torch.nn.functional as F
+from torch_geometric.nn import Sequential
 from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_pool
 from sklearn import metrics #Used For ROC-AUC
+from collections import OrderedDict #Used for sequential input to layers
 
 # constants
 MANUAL_SEED = 12345
@@ -19,11 +21,29 @@ class GCN(torch.nn.Module):
         self.activation_function = activation_function
         self.pooling_algorithm = pooling_algorithm
         
+        # List of layers. Contains a name for the layer, the method to execute, and the function parameters
+        self.layers = OrderedDict()
+        
         # Input layer
-        self.conv1 = GCNConv(in_features, hidden_channels)
-
+        self.layers['conv1'] = (GCNConv(in_features, hidden_channels), 'x, edge_index -> x')
+        
         # Hidden layers
-        self.hidden_layers = [GCNConv(hidden_channels, hidden_channels)] * amount_of_layers
+        for i in range (amount_of_layers):
+            # Pick activation function 
+            if self.activation_function.lower() == "relu":
+                self.layers['relu'+str(i+1)] = ReLU(inplace=True)
+            elif self.activation_function.lower() == "sigmoid":
+                self.layers['sigmoid'+str(i+1)] = Sigmoid()
+            elif self.activation_function.lower() == "tanh":
+                self.layers['tanh'+str(i+1)] = Tanh()
+            else : raise Exception("Invalid activationFunction name: " + str(self.activation_function))
+            
+            #Add convolutional layer
+            self.layers['conv'+str(i+2)] = (GCNConv(hidden_channels, hidden_channels), 'x, edge_index -> x')
+        
+        #Add layers to the model, including function paramters 
+        self.layers = Sequential('x, edge_index', self.layers)
+        
         #self.conv2 = GCNConv(hidden_channels, hidden_channels)
         #self.conv3 = GCNConv(hidden_channels, hidden_channels)
         #self.conv4 = GCNConv(hidden_channels, hidden_channels)
@@ -35,33 +55,15 @@ class GCN(torch.nn.Module):
     # Foward propagation
     def forward(self, x, edge_index, batch):
         # 1. Obtain node embeddings
-        x = self.conv1(x, edge_index)
-        for layer in self.hidden_layers:
-            #Switch dependent on activation function key string
-            if self.activation_function.lower() == "relu":
-                x = x.relu()
-            elif self.activation_function.lower() == "sigmoid":
-                x = x.sigmoid()
-
-            layer(x, edge_index)
-
-
-        #x = x.relu()
-        #x = self.conv2(x, edge_index)
-        #x = x.relu()
-        #x = self.conv3(x, edge_index)
-        #x = x.relu()
-        #x = self.conv4(x, edge_index)
-        #x = x.relu()
-        #x = self.conv5(x, edge_index)
+        x = self.layers(x, edge_index)
 
         # 2. Readout layer
+        # Picks from pooling options
         if self.pooling_algorithm.lower() == 'mean' : x = global_mean_pool(x, batch)
         elif self.pooling_algorithm.lower() == 'sum' : x = global_add_pool(x, batch)
         elif self.pooling_algorithm.lower() == 'max' : x = global_max_pool(x, batch)
-
-        #x = global_mean_pool(x, batch)  # [batch_size, hidden_channels]
-
+        else : raise Exception("Invalid pooling name: " + str(self.pooling_algorithm))
+        
         # 3. Apply a final classifier
         x = F.dropout(x, p=self.dropout_rate, training=self.training)
         x = self.lin(x)
@@ -129,9 +131,22 @@ class EvaluationMetricsData():
         self.f1 = 2 * self.PREC * self.TPR / (self.PREC + self.TPR)
 
         #AUC ROC and PR AUC
-        self.auc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
+        self.roc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
+        self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
                      
+
+class StoredModel():
+    def __init__(self):
+        self.evalutation_metric = 0
+        self.model = None
+        self.params = None 
     
+    #Function that updates parameters
+    def update(self, evalutation_metric, model, params):
+        self.evalutation_metric = evalutation_metric
+        self.model = model
+        self.params = params
+
 
 # All data from a given set of hyperparameters.
 # Data passed to plotting functions
