@@ -125,15 +125,26 @@ class EvaluationMetricsData():
         self.FP = self.FP / amountOfLabels
         self.FN = self.FN / amountOfLabels
 
-        self.TPR = self.TP / (self.TP+self.FN)  #Sensitivity, Recall, true positive rate
+
+        # Check if both of them are zero. Then set result to 0
+        
+        if (self.TP == 0 and self.FN == 0): self.TPR = 0
+        else: self.TPR = self.TP / (self.TP+self.FN)  #Sensitivity, Recall, true positive rate
         self.FPR = 1-self.TPR                   #false positive rate
-        self.PREC = self.TP / (self.TP + self.FP) #Precision
-        self.f1 = 2 * self.PREC * self.TPR / (self.PREC + self.TPR)
+        
+        if (self.TP == 0 and self.FP == 0): self.PREC = 0
+        else: self.PREC = self.TP / (self.TP + self.FP) #Precision
+        
+        if (self.PREC == 0 and self.TPR == 0) : self.f1 = 0
+        else: self.f1 = 2 * self.PREC * self.TPR / (self.PREC + self.TPR)
 
         #AUC ROC and PR AUC
-        self.roc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
+        
+        #ROC fails if the TP and FP are zero
+        if (self.TP == 0 and self.FP == 0): self.roc = 0
+        else: self.roc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
         self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
-                     
+                    
 
 class StoredModel():
     def __init__(self):

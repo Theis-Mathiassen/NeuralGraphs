@@ -69,11 +69,11 @@ print(len(test_dataset))
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
     'dropout_rate': [0.25,0.75],
-    'hidden_channels': [32,64],
+    'hidden_channels': [32],
     'learning_rate': [0.01, 0.1],
-    'batch_size' : [16, 200],
-    'epochs' : [10,200],
-    'amount_of_layers' : [2,4],
+    'batch_size' : [16],
+    'epochs' : [10,40],
+    'amount_of_layers' : [2],
     'optimizer' : ['SGD', 'adam'],        #String key   'SGD', 'adam', 'RMSprop'
     'activation_function' : ['relu', 'sigmoid'], #'Relu', 'sigmoid', 'tanh'
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'

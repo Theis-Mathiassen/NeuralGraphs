@@ -1,8 +1,7 @@
 from Classes import GCN, BaseModel, EvaluationMetricsData, StoredModel
 from Search_Model import search_model
 
-import time  # Used to measure time
-from bayes_opt import BayesianOptimization, UtilityFunction #From pip install bayesian-optimization
+from bayes_opt import BayesianOptimization #From pip install bayesian-optimization
 
 
 
@@ -82,29 +81,29 @@ def bayesian_search (dataset, device, param_grid):
         'activation_function' : [0, len(param_grid['activation_function']) - 1], 
         'pooling_algorithm' : [0, len(param_grid['pooling_algorithm']) - 1]
     } 
+
+    # Create Bayesian model
+    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=111)
     
-    start = time.time()
+    #Maximize for target
+    bayesian_model.maximize(init_points=20, n_iter=4) #TO do, figure out what these mean
     
-    gbm_bo = BayesianOptimization(black_box_function, pbounds, random_state=111)
-    gbm_bo.maximize(init_points=20, n_iter=4) #TO do, figure out what these mean
-    
-    params_gbm = gbm_bo.max['params']
-    
-    #Update params so they fit
-    params_gbm['hidden_channels'] = round(params_gbm['hidden_channels'])      #Needs to be whole number so rounds
-    params_gbm['batch_size'] = round(params_gbm['batch_size'])
-    params_gbm['epochs'] = round(params_gbm['epochs'])
-    params_gbm['amount_of_layers'] = round(params_gbm['amount_of_layers'])
+    #Find parameters for optimal model
+    optimal_params = bayesian_model.max['params']
+
+    #Update params so they fit their meanings 
+    optimal_params['hidden_channels'] = round(optimal_params['hidden_channels'])      #Needs to be whole number so rounds
+    optimal_params['batch_size'] = round(optimal_params['batch_size'])
+    optimal_params['epochs'] = round(optimal_params['epochs'])
+    optimal_params['amount_of_layers'] = round(optimal_params['amount_of_layers'])
     # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
-    params_gbm['optimizer'] = param_grid['optimizer'][round(params_gbm['optimizer'])] 
-    params_gbm['activation_function'] = param_grid['activation_function'][round(params_gbm['activation_function'])] 
-    params_gbm['pooling_algorithm'] = param_grid['pooling_algorithm'][round(params_gbm['pooling_algorithm'])] 
+    optimal_params['optimizer'] = param_grid['optimizer'][round(optimal_params['optimizer'])] 
+    optimal_params['activation_function'] = param_grid['activation_function'][round(optimal_params['activation_function'])] 
+    optimal_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(optimal_params['pooling_algorithm'])] 
     
-    
-    print(params_gbm)
-    print('It takes %s minutes' % ((time.time() - start)/60))
-    
-    
+    #Print out best model performance (target) + params
+    print('Target measure: '+str(bayesian_model.max['target']))
+    print(optimal_params)
 
 
     #     # #Print out results and potentially best options
