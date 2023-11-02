@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import ParameterGrid
 import torch
 from Classes import GCN, BaseModel, EvaluationMetricsData, StoredModel
+from Search_Model import search_model
 from Train_Test import train, test
 from tqdm import trange
 from torch_geometric.loader import DataLoader
@@ -25,22 +26,6 @@ def grid_search (dataset, device, param_grid):
     best_f1 = StoredModel()
     best_roc = StoredModel()
     best_pr = StoredModel()
-    
-    best_model_accuracy = None
-    best_epoch_accuracy = 0.0
-    best_params_accuracy = None
-
-    best_model_f1 = None
-    best_epoch_f1 = 0.0
-    best_params_f1 = None
-    
-    best_model_roc = None
-    best_epoch_roc = 0.0
-    best_params_roc = None
-    
-    best_model_pr = None
-    best_epoch_pr = 0.0
-    best_params_pr = None
 
     """   param_grid = {
         'dropout_rate': [0.25, 0.5, 0.75],
@@ -64,37 +49,10 @@ def grid_search (dataset, device, param_grid):
     # iterates over each item defined in param_grid
     for params in ParameterGrid(param_grid):
         
-        # Define the data loaders, this uses batch_size
-        train_loader = DataLoader(dataset=train_dataset, batch_size=params["batch_size"], shuffle=True)
-        test_loader = DataLoader(dataset=test_dataset, batch_size=params["batch_size"], shuffle=False)
-
-        gridModel = GCN(hidden_channels=params["hidden_channels"], dropout_rate=params["dropout_rate"], learning_rate=params["learning_rate"], 
-                        activation_function=params["activation_function"], amount_of_layers=params["amount_of_layers"], pooling_algorithm=params["pooling_algorithm"])
-        gridModel.to(device)
-
-        #Deciding which optimizer to use
-        optimizer = None
-        if(params["optimizer"].lower() == 'sgd'): optimizer = torch.optim.SGD(gridModel.parameters(), lr=gridModel.learning_rate)
-        elif(params["optimizer"].lower() == 'adam'): optimizer = torch.optim.Adam(gridModel.parameters(), lr=gridModel.learning_rate)
-        elif(params["optimizer"].lower() == 'rmsprop'): optimizer = torch.optim.RMSprop(gridModel.parameters(), lr=gridModel.learning_rate)
-        else : raise Exception("Invalid optimizer name: " + str(params["optimizer"]))
-
-        loss_function = torch.nn.CrossEntropyLoss()
-        baseModel = BaseModel(gridModel, loss_function, optimizer)
-
-
-        for epoch in trange(0, params["epochs"]):
-            # TRAIN
-            train_data = train(baseModel, train_loader, device)
-            
-        test_data = test(baseModel, test_loader, device)
-            
-        # Calculate average loss and accuracy for the entire epoch
-        #avg_epoch_loss = epoch_loss / len(test_loader)
-        #avg_epoch_accuracy = epoch_accuracy / len(test_loader)
-        #test_accuracies_grid.append(avg_epoch_accuracy)
+        # Call search model which creates and runs the model based on the params. It returns the testData and the model used
+        test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
         
-        #Get evaluation data from test_data
+        # Find evaluation metrics
         eval_data = EvaluationMetricsData(test_data)
 
         #Print out results and potentially best options
