@@ -13,16 +13,7 @@ DATASPLIT = 150
 #   device : torch.device
 #   param_grid : library(str->list) that contains 'dropout_rate', 'hidden_channels', 'learning_rate'
 # -----
-def bayesian_search (dataset, device, param_grid):
-    # Initialize variables to keep track of the best model and its accuracy
-    # Testing for test accuracy, f1 score, auc-roc, and auc-pr
-    
-    #StoredModel for each of the evalutationMetrics
-    best_accuracy = StoredModel()
-    best_f1 = StoredModel()
-    best_roc = StoredModel()
-    best_pr = StoredModel()
-
+def bayesian_search (dataset, device, param_grid, init_points, n_iter):
 
     #Params for bayesian search should be a min or a max value, or a list of string keys
     """   param_grid = {        
@@ -85,14 +76,19 @@ def bayesian_search (dataset, device, param_grid):
     # Create Bayesian model
     bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=111)
     
-    #Maximize for target
-    bayesian_model.maximize(init_points=20, n_iter=4) #TO do, figure out what these mean
+    # Maximize for target
+    # init_points means the amount of initial states which randomly will be chosen within the search space
+    # n_iter refers to the amount of iterations bayesian optimization will do, that are searched in the most likely area to be good
+    bayesian_model.maximize(init_points, n_iter)
+    
+    #bayesian_model.maximize(init_points=20, n_iter=10) 
+    
     
     #Find parameters for optimal model
     optimal_params = bayesian_model.max['params']
 
     #Update params so they fit their meanings 
-    optimal_params['hidden_channels'] = round(optimal_params['hidden_channels'])      #Needs to be whole number so rounds
+    optimal_params['hidden_channels'] = round(optimal_params['hidden_channels']) #Needs to be whole number so rounds
     optimal_params['batch_size'] = round(optimal_params['batch_size'])
     optimal_params['epochs'] = round(optimal_params['epochs'])
     optimal_params['amount_of_layers'] = round(optimal_params['amount_of_layers'])

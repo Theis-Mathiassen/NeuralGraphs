@@ -71,8 +71,8 @@ param_grid = {
     'dropout_rate': [0.25,0.75],
     'hidden_channels': [32],
     'learning_rate': [0.01, 0.1],
-    'batch_size' : [16],
-    'epochs' : [10,40],
+    'batch_size' : [16, 64],
+    'epochs' : [20, 50, 150],
     'amount_of_layers' : [2],
     'optimizer' : ['SGD', 'adam'],        #String key   'SGD', 'adam', 'RMSprop'
     'activation_function' : ['relu', 'sigmoid'], #'Relu', 'sigmoid', 'tanh'
@@ -80,7 +80,10 @@ param_grid = {
 }
 
 #grid_search(dataset, device, param_grid)
-bayesian_search(dataset, device, param_grid)
+
+startingPoints = 20;
+iterations = 20
+bayesian_search(dataset, device, param_grid, startingPoints, iterations)
 
 
 """ 
