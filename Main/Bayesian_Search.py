@@ -11,7 +11,9 @@ DATASPLIT = 150
 # INPUT
 #   train_loader, test_loader : dataloader
 #   device : torch.device
-#   param_grid : library(str->list) that contains 'dropout_rate', 'hidden_channels', 'learning_rate'
+#   param_grid : library(str->list) that contains hyperparameters
+#   init_points : the amount of random points to set before algorithm begins
+#   n_iter : iterations of the bayesian optimization algorithm 
 # -----
 def bayesian_search (dataset, device, param_grid, init_points, n_iter):
 
@@ -35,21 +37,25 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     print(len(train_dataset))
     print(len(test_dataset))
 
+    # adjusts parameters such that they fit the model
+    def adjust_params (dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm):
+            updated_params = {}
+            updated_params['dropout_rate'] = dropout_rate
+            updated_params['hidden_channels'] = round(hidden_channels)      #Needs to be whole number so rounds
+            updated_params['learning_rate'] = learning_rate
+            updated_params['batch_size'] = round(batch_size)
+            updated_params['epochs'] = round(epochs)
+            updated_params['amount_of_layers'] = round(amount_of_layers)
+            # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
+            updated_params['optimizer'] = param_grid['optimizer'][round(optimizer)] 
+            updated_params['activation_function'] = param_grid['activation_function'][round(activation_function)] 
+            updated_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(pooling_algorithm)] 
+        return updated_params
+
     # define function which will be run for each iteraiton 
     def black_box_function(dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm):
         # 1. Start by appropriately loading in params
-        params = {}
-        params['dropout_rate'] = dropout_rate
-        params['hidden_channels'] = round(hidden_channels)      #Needs to be whole number so rounds
-        params['learning_rate'] = learning_rate
-        params['batch_size'] = round(batch_size)
-        params['epochs'] = round(epochs)
-        params['amount_of_layers'] = round(amount_of_layers)
-        # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
-        params['optimizer'] = param_grid['optimizer'][round(optimizer)] 
-        params['activation_function'] = param_grid['activation_function'][round(activation_function)] 
-        params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(pooling_algorithm)] 
-        
+        params = adjust_params (dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm)
         
         # 2. Run model
         test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
