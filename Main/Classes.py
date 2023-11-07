@@ -44,11 +44,6 @@ class GCN(torch.nn.Module):
         #Add layers to the model, including function paramters 
         self.layers = Sequential('x, edge_index', self.layers)
         
-        #self.conv2 = GCNConv(hidden_channels, hidden_channels)
-        #self.conv3 = GCNConv(hidden_channels, hidden_channels)
-        #self.conv4 = GCNConv(hidden_channels, hidden_channels)
-        #self.conv5 = GCNConv(hidden_channels, hidden_channels)
-
         # Output layer
         self.lin = Linear(hidden_channels, outfeatures)
 

@@ -50,22 +50,6 @@ print(device)
 torch.manual_seed(MANUAL_SEED)
 dataset = dataset.shuffle()
 
-
-#MOVED TO GRID_SEARCH, such that batch size and datasplit can be changed as hyperparameters
-"""
-
-# Allocate data for training and remainder for testing 
-train_dataset = dataset[:DATASPLIT]
-test_dataset = dataset[DATASPLIT:]
-
-# Define the data loaders. Used later for training, can be ignored for now
-train_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE_TRAINING, shuffle=True)
-test_loader = DataLoader(dataset=test_dataset, batch_size=BATCH_SIZE_TESTING, shuffle=False)
-
-print(len(train_dataset))
-print(len(test_dataset))
-"""
-
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
     'dropout_rate': [0.25,0.75],
