@@ -38,24 +38,25 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     print(len(test_dataset))
 
     # adjusts parameters such that they fit the model
-    def adjust_params (dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm):
-            updated_params = {}
-            updated_params['dropout_rate'] = dropout_rate
-            updated_params['hidden_channels'] = round(hidden_channels)      #Needs to be whole number so rounds
-            updated_params['learning_rate'] = learning_rate
-            updated_params['batch_size'] = round(batch_size)
-            updated_params['epochs'] = round(epochs)
-            updated_params['amount_of_layers'] = round(amount_of_layers)
-            # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
-            updated_params['optimizer'] = param_grid['optimizer'][round(optimizer)] 
-            updated_params['activation_function'] = param_grid['activation_function'][round(activation_function)] 
-            updated_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(pooling_algorithm)] 
+    def adjust_params (activation_function, amount_of_layers, batch_size, dropout_rate, epochs, hidden_channels, learning_rate, optimizer, pooling_algorithm):
+        updated_params = {}
+        updated_params['dropout_rate'] = dropout_rate
+        updated_params['hidden_channels'] = round(hidden_channels)      #Needs to be whole number so rounds
+        updated_params['learning_rate'] = learning_rate
+        updated_params['batch_size'] = round(batch_size)
+        updated_params['epochs'] = round(epochs)
+        updated_params['amount_of_layers'] = round(amount_of_layers)
+        # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
+        updated_params['optimizer'] = param_grid['optimizer'][round(optimizer)] 
+        updated_params['activation_function'] = param_grid['activation_function'][round(activation_function)] 
+        updated_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(pooling_algorithm)] 
+        
         return updated_params
 
     # define function which will be run for each iteraiton 
     def black_box_function(dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm):
         # 1. Start by appropriately loading in params
-        params = adjust_params (dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm)
+        params = adjust_params(activation_function, amount_of_layers, batch_size, dropout_rate, epochs, hidden_channels, learning_rate, optimizer, pooling_algorithm)
         
         # 2. Run model
         test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
@@ -78,6 +79,8 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
         'activation_function' : [0, len(param_grid['activation_function']) - 1], 
         'pooling_algorithm' : [0, len(param_grid['pooling_algorithm']) - 1]
     } 
+    
+    
 
     # Create Bayesian model
     bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=111)
@@ -94,14 +97,16 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     optimal_params = bayesian_model.max['params']
 
     #Update params so they fit their meanings 
-    optimal_params['hidden_channels'] = round(optimal_params['hidden_channels']) #Needs to be whole number so rounds
-    optimal_params['batch_size'] = round(optimal_params['batch_size'])
-    optimal_params['epochs'] = round(optimal_params['epochs'])
-    optimal_params['amount_of_layers'] = round(optimal_params['amount_of_layers'])
-    # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
-    optimal_params['optimizer'] = param_grid['optimizer'][round(optimal_params['optimizer'])] 
-    optimal_params['activation_function'] = param_grid['activation_function'][round(optimal_params['activation_function'])] 
-    optimal_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(optimal_params['pooling_algorithm'])] 
+    optimal_params = adjust_params(*optimal_params.values())
+    
+    # optimal_params['hidden_channels'] = round(optimal_params['hidden_channels']) #Needs to be whole number so rounds
+    # optimal_params['batch_size'] = round(optimal_params['batch_size'])
+    # optimal_params['epochs'] = round(optimal_params['epochs'])
+    # optimal_params['amount_of_layers'] = round(optimal_params['amount_of_layers'])
+    # # Selecting from string keys. To do this we consider which element index of the array it is nearest, and pick that key string
+    # optimal_params['optimizer'] = param_grid['optimizer'][round(optimal_params['optimizer'])] 
+    # optimal_params['activation_function'] = param_grid['activation_function'][round(optimal_params['activation_function'])] 
+    # optimal_params['pooling_algorithm'] = param_grid['pooling_algorithm'][round(optimal_params['pooling_algorithm'])] 
     
     #Print out best model performance (target) + params
     print('Target measure: '+str(bayesian_model.max['target']))

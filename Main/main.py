@@ -87,9 +87,7 @@ bayesian_search(dataset, device, param_grid, startingPoints, iterations)
 
 
 """ 
-
 loss_f = torch.nn.CrossEntropyLoss()
-
 hc_array = [5, 10, 20, 40, 64, 100] # Længde = 7
 lr_array = [0.1, 0.01, 0.005, 0.003, 0.001] 
 all_data_list = []
