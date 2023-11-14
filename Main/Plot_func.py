@@ -11,6 +11,8 @@ import matplotlib.patches as patches
 from datetime import datetime
 from Classes import TrainData, TestData, AllData
 import numpy as np
+from random import randint
+import matplotlib.cm as cm
 
 
 
@@ -190,16 +192,23 @@ def AndreasPlot(trainData: TrainData, testData: TestData, MANUAL_SEED, DATASPLIT
     plt.tight_layout()
 
 def HyperParamSearchPlot(test_scores, eval_metric : str) :
-    X = np.arange(0, len(test_scores))
-    ylim = max(test_scores)*1.1
-    xmax = np.array(test_scores).argmax()
+    test_scores = np.array(test_scores)
+    #test_scores.sort()
+    X = np.linspace(0, test_scores.size, num=test_scores.size)
+    ylim = np.max(test_scores) * 1.1
+    xmax = test_scores.argmax()
+    random_color="#" + f"{randint(0, 0xFFFFFF):06x}"
+    
     plt.figure()
-    plt.scatter(X, test_scores, s = 0.3, cmap='viridis')
+    ax=plt.axes()
+    ax.set_facecolor('lightgray')
+    plt.scatter(X, test_scores, s = 1.5, c=test_scores, cmap='inferno')
     plt.colorbar()
     plt.ylim(0, ylim)
-    plt.annotate('Max', xy=(xmax, ylim), xytext=(xmax-0.1, ylim+0.3), arrowprops = dict(facecolor='black', shrink='0.05'))
+    plt.annotate('Max', xy=(xmax, ylim), xytext=(xmax-0.1, ylim+0.13), arrowprops = dict(facecolor='black', shrink=0.015))
+    plt.grid()
 
-    plt.xlabel('# Permutations')
+    plt.xlabel('# Permutation')
     plt.ylabel(eval_metric)
-    plt.title(eval_metric + " over different permutations")
+    plt.title(eval_metric + " over permutations")
     plt.show()
