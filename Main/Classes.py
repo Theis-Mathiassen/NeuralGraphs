@@ -7,6 +7,7 @@ from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_pool
 from sklearn import metrics #Used For ROC-AUC
 from collections import OrderedDict #Used for sequential input to layers
+import csv
 
 # constants
 MANUAL_SEED = 12345
@@ -182,3 +183,25 @@ class AllData():
         self.test_labels.extend(data.test_labels)
         self.test_scores.extend(data.test_scores)
         self.test_probability_estimates.extend(data.test_probability_estimates)
+
+class CSVWriter():
+    def __init__(self, name, eval):
+        self.name = "results/" + name
+        self.eval = str(eval)
+
+        with open('results/' + name, 'w') as csvfile:
+            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval]
+            writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
+            writer.writeheader()
+            csvfile.close()
+        
+        
+        self.csvfile = open('results/' + name, 'a', newline = '')
+        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval]
+        self.writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
+
+    def CSVWriter(self, data):
+        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, self.eval: data.eval})
+
+    def CSVClose(self):
+        self.csvfile.close()
