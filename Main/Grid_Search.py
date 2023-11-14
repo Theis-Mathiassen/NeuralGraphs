@@ -6,6 +6,7 @@ from Search_Model import search_model
 from Train_Test import train, test
 from tqdm import trange
 from torch_geometric.loader import DataLoader
+from datetime import datetime
 
 from sklearn.model_selection import train_test_split
 
@@ -43,17 +44,20 @@ def grid_search (dataset, device, param_grid, datasplit):
     train_dataset = dataset[:datasplit]
     test_dataset = dataset[datasplit:]
 
+    
     # iterates over each item defined in param_grid
     for params in ParameterGrid(param_grid):
-        
+        start = datetime.now()
         # Call search model which creates and runs the model based on the params. It returns the testData and the model used
         test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
+        end = datetime.now()
 
         for data in test_data:
             eval_data = EvaluationMetricsData(data)
             # Do something funny where params changes epochs 
-            # csv_class.add(eval_data, params, time)
+            # csv_class.add(eval_data, params, end-start)
             find_best(gridModel, params, eval_data, best_accuracy, best_f1, best_roc, best_pr)
+
     print("Best accuracy: {} - with parameters {}", format((best_accuracy.evalutation_metric, best_accuracy.params)))
 
 
