@@ -13,6 +13,7 @@ from Classes import TrainData, TestData, AllData
 import numpy as np
 
 
+
 # Used for prettier graph
 def AvgCalculator(data, numChunks):
     averageOfData = []
@@ -187,3 +188,18 @@ def AndreasPlot(trainData: TrainData, testData: TestData, MANUAL_SEED, DATASPLIT
     fig.suptitle(title, fontsize=12, wrap=True)
 
     plt.tight_layout()
+
+def HyperParamSearchPlot(test_scores, eval_metric : str) :
+    X = np.arange(0, len(test_scores))
+    ylim = max(test_scores)*1.1
+    xmax = np.array(test_scores).argmax()
+    plt.figure()
+    plt.scatter(X, test_scores, s = 0.3, cmap='viridis')
+    plt.colorbar()
+    plt.ylim(0, ylim)
+    plt.annotate('Max', xy=(xmax, ylim), xytext=(xmax-0.1, ylim+0.3), arrowprops = dict(facecolor='black', shrink='0.05'))
+
+    plt.xlabel('# Permutations')
+    plt.ylabel(eval_metric)
+    plt.title(eval_metric + " over different permutations")
+    plt.show()
