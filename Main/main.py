@@ -22,6 +22,7 @@ from Train_Test import train, test
 from Plot_func import MultiPlotter
 from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
+from Plot_func import HyperParamSearchPlot
 
 from tqdm import trange
 
@@ -56,7 +57,7 @@ param_grid = {
     'hidden_channels': [32],
     'learning_rate': [0.01, 0.1],
     'batch_size' : [16, 64],
-    'epochs' : [20, 50, 150],
+    #'epochs' : [20, 50, 150],
     'amount_of_layers' : [2],
     'optimizer' : ['SGD', 'adam'],        #String key   'SGD', 'adam', 'RMSprop'
     'activation_function' : ['relu', 'sigmoid'], #'Relu', 'sigmoid', 'tanh'
@@ -67,8 +68,11 @@ param_grid = {
 
 startingPoints = 20;
 iterations = 20
-bayesian_search(dataset, device, param_grid, startingPoints, iterations)
+#bayesian_search(dataset, device, param_grid, startingPoints, iterations)
 
+bigData = {0.4, 0.34, 0.3, 0.4, 0.45, 0.5, 0.51, 0.52, 0.55, 0.56, 0.6, 0.7, 0.69, 0.73, 0.7, 0.79, 0.8, 0.75, 0.74, 0.76, 0.7, 0.69, 0.68, 0.69, 0.65}
+
+HyperParamSearchPlot(bigData, "f1")
 
 """ 
 loss_f = torch.nn.CrossEntropyLoss()
