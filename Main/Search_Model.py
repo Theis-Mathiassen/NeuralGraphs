@@ -34,7 +34,7 @@ def search_model(params, train_dataset, test_dataset, device) :
         baseModel = BaseModel(model, loss_function, optimizer) 
 
         test_data = []
-        for epochs in [10, 50, 100, 200] :
+        for epochs in [10, 40, 50, 100] :
             i = 0
             for epoch in epochs:
                 # TRAIN
