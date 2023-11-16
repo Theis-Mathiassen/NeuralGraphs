@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 
 from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
-from Plot_func import MultiPlotter
 from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
 from Plot_func import HyperParamSearchPlot
