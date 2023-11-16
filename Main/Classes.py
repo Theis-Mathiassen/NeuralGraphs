@@ -185,23 +185,23 @@ class AllData():
         self.test_probability_estimates.extend(data.test_probability_estimates)
 
 class CSVWriter():
-    def __init__(self, name, eval_name):
+    def __init__(self, name):
         self.name = "results/" + name
         self.eval_name = str(eval_name)
-
+        """
         with open('results/' + name, 'w') as csvfile:
             fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval_name]
             writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
             writer.writeheader()
             csvfile.close()
-        
+        """
         
         self.csvfile = open('results/' + name, 'a', newline = '')
-        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval_name]
+        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr']
         self.writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
 
-    def CSVWriter(self, data):
-        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, self.eval: data.eval_data})
+    def CSVWriteRow(self, data, eval):
+        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, 'acc': eval.acc, 'f1': eval.f1, 'roc': eval.roc, 'pr': eval.pr})
 
     def CSVClose(self):
         self.csvfile.close()
