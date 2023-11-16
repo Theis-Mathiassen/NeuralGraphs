@@ -49,8 +49,8 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
 
         eval_data = EvaluationMetricsData(test_data)
         
-        # 3. Return score (performance value)
-        return eval_data.accuracy
+        # 3. Return score (performance value: set to AUC ROC)
+        return eval_data.roc
         
     # Set a range to optimize for. Min and max values are chosen for each hyper parameter
     pbounds  = {        
