@@ -59,7 +59,7 @@ param_grid = {
     'batch_size' : [16, 32, 64, 150],
     'epochs' : [10, 50, 100, 200],
     'amount_of_layers' : [1, 2, 3, 9],
-    'optimizer' : ['SGD', 'adam', 'rmsprop'],        #String key   'SGD', 'adam', 'RMSprop'
+    'optimizer' : ['SGD', 'adam', 'RMSprop'],        #String key   'SGD', 'adam', 'RMSprop'
     'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
