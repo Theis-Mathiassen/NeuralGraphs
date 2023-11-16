@@ -18,8 +18,8 @@ from sklearn.model_selection import train_test_split
 # -----
 
 def find_best(model, params, eval_data, best_accuracy, best_f1, best_roc, best_pr):
-    if(eval_data.test_accuracy > best_accuracy.evalutation_metric):
-        best_accuracy.update(eval_data.test_accuracy, model, params)
+    if(eval_data.accuracy > best_accuracy.evalutation_metric):
+        best_accuracy.update(eval_data.accuracy, model, params)
     
     if(eval_data.f1 > best_f1.evalutation_metric):
         best_f1.update(eval_data.f1, model, params)
@@ -51,16 +51,19 @@ def grid_search (dataset, device, param_grid, datasplit):
         # Call search model which creates and runs the model based on the params. It returns the testData and the model used
         test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
         end = datetime.now()
+        
+        eval_data = EvaluationMetricsData(test_data)
 
-        for data in test_data:
-            eval_data = EvaluationMetricsData(data)
-            # Do something funny where params changes epochs 
-            # csv_class.add(eval_data, params, end-start)
-            find_best(gridModel, params, eval_data, best_accuracy, best_f1, best_roc, best_pr)
+        # csv_class.add(eval_data, params, end-start)
 
-    print("Best accuracy: {} - with parameters {}", format((best_accuracy.evalutation_metric, best_accuracy.params)))
+        find_best(gridModel, params, eval_data, best_accuracy, best_f1, best_roc, best_pr)
 
+    print(f"Best accuracy: {best_accuracy.evalutation_metric} - with parameters {best_accuracy.params}")
+    print(f"Best f1: {best_f1.evalutation_metric} - with parameters {best_f1.params}")
+    print(f"Best roc: {best_roc.evalutation_metric} - with parameters {best_roc.params}")
+    print(f"Best pr: {best_pr.evalutation_metric} - with parameters {best_pr.params}")
 
+    # csv_class.close()
     
 
 

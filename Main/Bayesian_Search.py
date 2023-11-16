@@ -16,20 +16,6 @@ DATASPLIT = 150
 #   n_iter : iterations of the bayesian optimization algorithm 
 # -----
 def bayesian_search (dataset, device, param_grid, init_points, n_iter):
-
-    #Params for bayesian search should be a min or a max value, or a list of string keys
-    """   param_grid = {        
-        'dropout_rate': [0.25, 0.75],
-        'hidden_channels': [32, 64],
-        'learning_rate': [0.005, 0.1],
-        'batch_size' : [1, 64],
-        'epochs' : [150, 300],
-        'amount_of_layers' : [3, 5],
-        'optimizer' : ['adam', 'sgd'],
-        'activation_function' : ['relu', 'sigmoid']
-        'pooling_algorithm' : ['mean', 'sum', 'max']
-    } """
-
     # Allocate data for training and remainder for testing 
     train_dataset = dataset[:DATASPLIT]
     test_dataset = dataset[DATASPLIT:]
