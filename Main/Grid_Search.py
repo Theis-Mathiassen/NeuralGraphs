@@ -31,8 +31,8 @@ def find_best(model, params, eval_data, best_accuracy, best_f1, best_roc, best_p
     if(eval_data.pr > best_pr.evalutation_metric):
         best_pr.update(eval_data.roc, model, params)
 
-def grid_search (dataset, device, param_grid, datasplit):
-    csv_class = CSVWriter('Mikkel')
+def grid_search (dataset, device, param_grid, datasplit, filename):
+    csv_class = CSVWriter(filename)
     csv_class.CSVOpen()
 
     #StoredModel for each of the evalutationMetrics

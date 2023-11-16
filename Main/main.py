@@ -65,7 +65,7 @@ param_grid = {
 }
 
 
-grid_search(dataset, device, param_grid, DATASPLIT)
+grid_search(dataset, device, param_grid, DATASPLIT, 'Mikkel')
 
 startingPoints = 20
 iterations = 20
