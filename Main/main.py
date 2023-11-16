@@ -53,14 +53,14 @@ dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
-    'dropout_rate': [0.25],#,0.75],
-    'hidden_channels': [32, 64],
-    'learning_rate': [0.01],# 0.1],
-    'batch_size' : [16],# 64],
-    'epochs' : [50],#, 50, 150],
-    'amount_of_layers' : [2],
-    'optimizer' : ['SGD'],#, 'adam'],        #String key   'SGD', 'adam', 'RMSprop'
-    'activation_function' : ['relu', 'sigmoid'], #'Relu', 'sigmoid', 'tanh'
+    'dropout_rate': [0.25, 0.50, 0.75],
+    'hidden_channels': [5, 32, 64, 128],
+    'learning_rate': [0.001, 0.01, 0.1],
+    'batch_size' : [16, 32, 64, 150],
+    'epochs' : [10, 50, 100, 200],
+    'amount_of_layers' : [1, 2, 3, 9],
+    'optimizer' : ['SGD', 'adam', 'rmsprop'],        #String key   'SGD', 'adam', 'RMSprop'
+    'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
