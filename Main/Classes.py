@@ -185,23 +185,37 @@ class AllData():
         self.test_probability_estimates.extend(data.test_probability_estimates)
 
 class CSVWriter():
-    def __init__(self, name, eval):
+    def __init__(self, name, eval_name):
         self.name = "results/" + name
-        self.eval = str(eval)
+        self.eval_name = str(eval_name)
 
         with open('results/' + name, 'w') as csvfile:
-            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval]
+            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval_name]
             writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
             writer.writeheader()
             csvfile.close()
         
         
         self.csvfile = open('results/' + name, 'a', newline = '')
-        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval]
+        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval_name]
         self.writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
 
     def CSVWriter(self, data):
-        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, self.eval: data.eval})
+        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, self.eval: data.eval_data})
 
     def CSVClose(self):
         self.csvfile.close()
+
+class ModelData():
+    def __init__(self, dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm, eval_name, eval_data):
+        self.dropout_rate = dropout_rate
+        self.hidden_channels = hidden_channels
+        self.learning_rate = learning_rate
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.amount_of_layers = amount_of_layers
+        self.optimizer = optimizer
+        self.activation_function = activation_function
+        self.pooling_algorithm = pooling_algorithm
+        self.eval_name = eval_name
+        self.eval_data = eval_data
