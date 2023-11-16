@@ -8,6 +8,7 @@ from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_poo
 from sklearn import metrics #Used For ROC-AUC
 from collections import OrderedDict #Used for sequential input to layers
 import csv
+import os
 
 # constants
 MANUAL_SEED = 12345
@@ -186,22 +187,26 @@ class AllData():
 
 class CSVWriter():
     def __init__(self, name):
-        self.name = "results/" + name
-        self.eval_name = str(eval_name)
-        """
-        with open('results/' + name, 'w') as csvfile:
-            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', self.eval_name]
+        # Create path if non-existent
+        cwd = os.getcwd()
+        path = os.path.join(cwd, 'results')
+        os.makedirs(path, exist_ok=True)
+
+        self.name = path + "/" + name + ".csv"
+        
+        with open(self.name, 'w') as csvfile:
+            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time']
             writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
             writer.writeheader()
             csvfile.close()
-        """
-        
-        self.csvfile = open('results/' + name, 'a', newline = '')
-        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr']
-        self.writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
 
-    def CSVWriteRow(self, data, eval):
-        self.writer.writerow({'dropout_rate': data.dropout_rate, 'hidden_channels': data.hidden_channels, 'learning_rate': data.learning_rate, 'batch_size': data.batch_size, 'epochs': data.epochs, 'amount_of_layers': data.amount_of_layers, 'optimizer': data.optimizer, 'activation_function': data.activation_function, 'pooling_algorithm': data.pooling_algorithm, 'acc': eval.acc, 'f1': eval.f1, 'roc': eval.roc, 'pr': eval.pr})
+    def CSVWriteRow(self, params, eval : EvaluationMetricsData, time):
+        self.writer.writerow({'dropout_rate': params['dropout_rate'], 'hidden_channels': params['hidden_channels'], 'learning_rate': params['learning_rate'], 'batch_size': params['batch_size'], 'epochs': params['epochs'], 'amount_of_layers': params['amount_of_layers'], 'optimizer': params['optimizer'], 'activation_function': params['activation_function'], 'pooling_algorithm': params['pooling_algorithm'], 'acc': eval.accuracy, 'f1': eval.f1, 'roc': eval.roc, 'pr': eval.pr, 'time' : time})
+
+    def CSVOpen(self) : 
+        self.csvfile = open(self.name, 'a', newline = '')
+        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time']
+        self.writer = csv.DictWriter(self.csvfile, fieldnames = fieldnames)
 
     def CSVClose(self):
         self.csvfile.close()

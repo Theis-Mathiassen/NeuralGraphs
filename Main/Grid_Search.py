@@ -7,6 +7,7 @@ from Train_Test import train, test
 from tqdm import trange
 from torch_geometric.loader import DataLoader
 from datetime import datetime
+from Classes import CSVWriter
 
 from sklearn.model_selection import train_test_split
 
@@ -31,8 +32,8 @@ def find_best(model, params, eval_data, best_accuracy, best_f1, best_roc, best_p
         best_pr.update(eval_data.roc, model, params)
 
 def grid_search (dataset, device, param_grid, datasplit):
-    # csv_class = Csv('filepath')
-    # csv_class.open()
+    csv_class = CSVWriter('Mikkel')
+    csv_class.CSVOpen()
 
     #StoredModel for each of the evalutationMetrics
     best_accuracy = StoredModel()
@@ -54,7 +55,7 @@ def grid_search (dataset, device, param_grid, datasplit):
         
         eval_data = EvaluationMetricsData(test_data)
 
-        # csv_class.add(eval_data, params, end-start)
+        csv_class.CSVWriteRow(params, eval_data, end-start)
 
         find_best(gridModel, params, eval_data, best_accuracy, best_f1, best_roc, best_pr)
 
@@ -63,7 +64,7 @@ def grid_search (dataset, device, param_grid, datasplit):
     print(f"Best roc: {best_roc.evalutation_metric} - with parameters {best_roc.params}")
     print(f"Best pr: {best_pr.evalutation_metric} - with parameters {best_pr.params}")
 
-    # csv_class.close()
+    csv_class.CSVClose()
     
 
 
