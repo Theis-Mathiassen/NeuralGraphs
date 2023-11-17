@@ -72,5 +72,5 @@ startingPoints = 20
 iterations = 20
 bayesian_search(dataset, device, param_grid, startingPoints, iterations)"""
 
-data = GetHeatData()
-#HeatMap(data)
+data = GetHeatData() # Gets data in the format that a clustermap desires
+HeatMap(data) # Plot clustermap 

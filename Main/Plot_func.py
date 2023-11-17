@@ -216,8 +216,6 @@ def HyperParamSearchPlot(test_scores, eval_metric : str) :
     plt.show()
 
 def HeatMap(data) :
-    sns.clustermap(data)
-    df.pivot_table(
-        values=['best_score'],
-        index=['activation_func', 'optimizer', 'pooling', 'learning rate', 'batch_size'],
-        columns=['nodes_in_hidden_layers', 'hidden_layer_count', 'learning rate', 'epochs'])
+    map = sns.clustermap(data, cmap='magma', figsize=(12, 8))
+
+    plt.show()
