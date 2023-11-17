@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 
 # reads the data from csv file into dataframe (df)
-all_data = pd.read_csv('results/32neurons001lr.csv')
+all_data = pd.read_csv('../results/Combined_Grid.csv')
 
 # delimits the df to the roc column
 ROC_df = all_data[['roc']]
@@ -69,7 +69,8 @@ def plot_auc_count(datasets, labels, title):
     # Plotting
     for i, dataset in enumerate(datasets):
         counts_in_ranges, value_ranges = create_ranges(dataset)
-        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label=f'{labels[i]}')
+        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
+        plt.legend(loc='upper left')
 
 
     plt.title('{}.'.format(title))
@@ -80,6 +81,10 @@ def plot_auc_count(datasets, labels, title):
     plt.xticks(tick_positions)
 
     plt.show()
+
+datasets = [sgd_ROC, adam_ROC, rmsprop_ROC]
+labels = ["SGD", "ADAM", "RMSProp"]
+plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for all optimizers")
 
 
 
