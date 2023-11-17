@@ -73,4 +73,4 @@ iterations = 20
 bayesian_search(dataset, device, param_grid, startingPoints, iterations)"""
 
 data = GetHeatData()
-HeatMap(data)
+#HeatMap(data)
