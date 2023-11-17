@@ -107,11 +107,11 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
         # New optimizer is loaded with previously seen points
         load_logs(bayesian_model, logs=["./logs.log"])
         logger = JSONLogger(path="./logs.log", reset=False)
+        init_points = 0
     else:
         logger = JSONLogger(path="./logs.log")
     
     bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
-
 
     # Results will be saved in ./logs.log
     bayesian_model.maximize(init_points, n_iter)
