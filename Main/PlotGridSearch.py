@@ -69,15 +69,22 @@ def create_ranges(data, num_ranges=100):
     return counts, value_ranges
 
 
-your_dataset = np.random.rand(1000) * 100 
-counts_in_ranges, value_ranges = create_ranges(df)
+def plot_auc_count(datasets, labels, title):
+    # Plotting
+    for i, dataset in enumerate(datasets):
+        counts_in_ranges, value_ranges = create_ranges(dataset)
+        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label=f'{labels[i]}')
 
-# Plotting
-plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', color='b')
-plt.title('Number of Points in Each Range')
-plt.xlabel('AUROC')
-plt.ylabel('Number of models')
-plt.show()
+
+    plt.title('{}.'.format(title))
+    plt.xlabel('AUROC')
+    plt.ylabel('Number of models')
+
+    tick_positions = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    plt.xticks(tick_positions)
+
+    plt.show()
+
 
 
 

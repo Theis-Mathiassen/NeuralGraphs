@@ -4,6 +4,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.axes as axes
 import sklearn
+import seaborn as sns
 from sklearn import metrics
 from sklearn.metrics import RocCurveDisplay
 import matplotlib.gridspec as gridspec
@@ -13,6 +14,7 @@ from Classes import TrainData, TestData, AllData
 import numpy as np
 from random import randint
 import matplotlib.cm as cm
+import pandas as df
 
 
 
@@ -212,3 +214,10 @@ def HyperParamSearchPlot(test_scores, eval_metric : str) :
     plt.ylabel(eval_metric)
     plt.title(eval_metric + " over permutations")
     plt.show()
+
+def HeatMap(data) :
+    sns.clustermap(data)
+    df.pivot_table(
+        values=['best_score'],
+        index=['activation_func', 'optimizer', 'pooling', 'learning rate', 'batch_size'],
+        columns=['nodes_in_hidden_layers', 'hidden_layer_count', 'learning rate', 'epochs'])
