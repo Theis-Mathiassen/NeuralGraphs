@@ -24,10 +24,14 @@ print(sgd_ROC[0:4])
 print(adam_ROC[0:4])
 print(rmsprop_ROC[0:4])
 
-
 # print(df.roc[0]) #0.7000000000001
 # print(type(df.roc[0])) # numpy.float64
 
+# selects all rows with roc == 0.0
+test_for_null = all_data.loc[all_data['roc'] == 0.0]
+
+# creates csv with all rows that resulted in an ROC value = 0.0
+test_for_null.to_csv('Main/test_for_null.csv', index=False)
 
 
 
