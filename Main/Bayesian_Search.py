@@ -5,6 +5,7 @@ from bayes_opt import BayesianOptimization #From pip install bayesian-optimizati
 
 from bayes_opt.logger import JSONLogger
 
+import os
 import datetime
 from bayes_opt.event import Events
 from bayes_opt.logger import JSONLogger
@@ -102,7 +103,7 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
 
     
 
-    if (read_logs):
+    if (read_logs and os.path.isfile("./logs.log")):
         # New optimizer is loaded with previously seen points
         load_logs(bayesian_model, logs=["./logs.log"])
         logger = JSONLogger(path="./logs.log", reset=False)
