@@ -4,6 +4,39 @@ import matplotlib.pyplot as plt
 import csv 
 import pandas as pd
 
+# reads the data from csv file into dataframe (df)
+all_data = pd.read_csv('results/32neurons001lr.csv')
+
+# delimits the df to the roc column
+ROC_df = all_data[['roc']]
+
+# makes df containing specific optimizers
+sgd_filter = all_data[all_data['optimizer'] == "SGD"]
+adam_filter = all_data[all_data['optimizer'] == "adam"]
+rmsprop_filter = all_data[all_data['optimizer'] == "RMSprop"]
+
+# leaves only the roc column of each optimizer
+sgd_ROC = sgd_filter[['roc']]
+adam_ROC = adam_filter[['roc']]
+rmsprop_ROC = rmsprop_filter[['roc']]
+
+print(sgd_ROC[0:4])
+print(adam_ROC[0:4])
+print(rmsprop_ROC[0:4])
+
+
+# print(df.roc[0]) #0.7000000000001
+# print(type(df.roc[0])) # numpy.float64
+
+
+
+
+
+
+
+
+
+
 def create_ranges(data, num_ranges=100):
     # Find the min and max
     min_val = np.min(data)
@@ -31,11 +64,6 @@ def create_ranges(data, num_ranges=100):
     counts, _ = np.histogram(data, bins=value_ranges)
     return counts, value_ranges
 
-# reads the data from csv file into dataframe
-df = pd.read_csv('../results/32neurons001lr.csv')
-
-# delimits the dataframe to the roc column
-df = df[['roc']]
 
 def plot_auc_count(datasets, labels, title):
     # Plotting
@@ -56,8 +84,6 @@ def plot_auc_count(datasets, labels, title):
 
 
 
-# print(df.roc[0]) #0.7000000000001
-# print(type(df.roc[0])) # numpy.float64
 
 
 
