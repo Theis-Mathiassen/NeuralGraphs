@@ -216,8 +216,49 @@ def HyperParamSearchPlot(test_scores, eval_metric : str) :
     plt.show()
 
 def HeatMap(data) :
-    sns.clustermap(data)
-    df.pivot_table(
-        values=['best_score'],
-        index=['activation_func', 'optimizer', 'pooling', 'learning rate', 'batch_size'],
-        columns=['nodes_in_hidden_layers', 'hidden_layer_count', 'learning rate', 'epochs'])
+    map = sns.clustermap(data, cmap='magma', figsize=(12, 8))
+
+    plt.show()
+
+def GridBayesianComparison(gridParam, bayesParam, gridVal, bayesVal, parameter):
+    fig, (ax1, ax2)= plt.subplots(1, 2)
+    fig.set_figheight(12)
+    fig.set_figwidth(26)
+
+    X = np.linspace(0, len(gridParam), len(gridParam))
+    tempFig = plt.figure('tempfig1')
+    plt.scatter(X, gridParam, label='grid', c='magenta')
+    plt.scatter(X, bayesParam, label='bayes', c='foresgreen')
+    tempFig.set_facecolor('lightgray')
+    plt.grid()
+
+    ax1 = tempFig
+    ax1.set_title(parameter) 
+    ax1.set_xlabel('Permutation')
+    ax1.set_ylabel(parameter + ' value')
+
+    tempFig = plt.figure('tempfig2')
+    plt.scatter(X, gridVal, label='grid', c='magenta')
+    plt.scatter(X, bayesVal, label='bayes', c='foresgreen')
+    tempFig.set_facecolor('lightgray')
+    plt.grid()
+
+    ax2.set_title(parameter)
+    ax2.set_xlabel('Permutation')
+    ax2.set_ylabel('AUROC Value')
+    
+    plt.figure(fig)
+    plt.show()
+
+def GridBayesHist(gridROC, ax : axes, bayesROC = None) : 
+    counts1, bins1 = np.histogram(gridROC)
+    #counts2, bins2 = np.histogram(bayesROC)
+    print(counts1, bins1)
+
+    ax.hist(bins1[:-1, ], bins1, weights=counts1, label=f"{len(gridROC)} iterations")
+    ax.legend()
+    ax.set_xlabel('Eval score')
+    ax.set_ylabel('Count')
+    ax.set_facecolor('lightgray')
+
+
