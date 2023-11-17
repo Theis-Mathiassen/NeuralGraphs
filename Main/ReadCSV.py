@@ -41,6 +41,7 @@ def GetHistData(score, cutoff = 0) :
 
     usecols = (index)
     grid_data = np.genfromtxt("results/Combined_Grid.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
-    #bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',')
+    bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
+    bayes_data = bayes_data[20:]
 
-    return grid_data#, bayes_data
+    return grid_data, bayes_data
