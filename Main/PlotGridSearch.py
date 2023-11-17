@@ -31,24 +31,29 @@ def create_ranges(data, num_ranges=100):
     counts, _ = np.histogram(data, bins=value_ranges)
     return counts, value_ranges
 
-
-df = pd.read_csv('results/32neurons001lr.csv')
+# reads the data from csv file into dataframe
+df = pd.read_csv('../results/32neurons001lr.csv')
 
 # delimits the dataframe to the roc column
 df = df[['roc']]
 
+def plot_auc_count(datasets, labels, title):
+    # Plotting
+    for i, dataset in enumerate(datasets):
+        counts_in_ranges, value_ranges = create_ranges(dataset)
+        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label=f'{labels[i]}')
 
-your_dataset = np.random.rand(1000) * 100 
-counts_in_ranges, value_ranges = create_ranges(df)
 
-# Plotting
-plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', color='b')
-plt.title('Number of Points in Each Range')
-plt.xlabel('AUROC')
-plt.ylabel('Number of models')
-plt.show()
+    plt.title('{}.'.format(title))
+    plt.xlabel('AUROC')
+    plt.ylabel('Number of models')
 
-# reads the data from csv file into dataframe
+    tick_positions = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    plt.xticks(tick_positions)
+
+    plt.show()
+
+
 
 
 # print(df.roc[0]) #0.7000000000001
