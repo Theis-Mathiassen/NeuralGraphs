@@ -9,6 +9,7 @@ from sklearn import metrics #Used For ROC-AUC
 from collections import OrderedDict #Used for sequential input to layers
 import csv
 import os
+import json
 
 # constants
 MANUAL_SEED = 12345
