@@ -68,5 +68,5 @@ param_grid = {
 
 startingPoints = 20
 iterations = 100
-bayesian_search(dataset, device, param_grid, startingPoints, iterations)
+bayesian_search(dataset, device, param_grid, startingPoints, iterations, True)
 
