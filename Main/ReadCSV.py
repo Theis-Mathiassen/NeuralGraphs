@@ -17,6 +17,8 @@ def GetParamData(parameter, score, cutoff) :
     count = 0
     pindex = 0
     sindex = 0
+
+
     for param in ['dropout_rate','hidden_channels','learning_rate','batch_size','epochs','amount_of_layers','optimizer','activation_function','pooling_algorithm','acc','f1','roc','pr']:
         if parameter == param:
             pindex = count
@@ -29,7 +31,20 @@ def GetParamData(parameter, score, cutoff) :
 
     bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
 
-    return grid_data, bayes_data
+    grid_data_s = np.empty(len(grid_data))
+    grid_data_p = np.empty(len(grid_data))
+    bayes_data_s = np.empty(len(bayes_data))
+    bayes_data_p = np.empty(len(bayes_data))
+
+    for i in range(0, len(grid_data)):
+        grid_data_p[i] = grid_data[i][0]
+        grid_data_s[i] = grid_data[i][1]
+    for i in range(0, len(bayes_data)):
+        bayes_data_p[i] = bayes_data[i][0]
+        bayes_data_s[i] = bayes_data[i][1]
+    
+
+    return grid_data_p, grid_data_s, bayes_data_p, bayes_data_s
 
 def GetHistData(score, cutoff = 0) : 
     count = 9

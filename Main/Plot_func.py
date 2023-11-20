@@ -222,35 +222,33 @@ def HeatMap(data) :
     plt.show()
 
 def GridBayesianComparison(gridParam, bayesParam, gridVal, bayesVal, parameter):
-    fig, (ax1, ax2)= plt.subplots(1, 2)
+    fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_figheight(12)
-    fig.set_figwidth(26)
+    fig.set_figwidth(18)
 
     X = np.linspace(0, len(gridParam), len(gridParam))
     print(X)
 
     
-    tempFig = plt.figure('tempfig1')
-    plt.scatter(X, gridParam, label='grid', c='magenta')
-    plt.scatter(X, bayesParam, label='bayes', c='forestgreen')
-    plt.xlabel('Permutation')
-    plt.title(parameter)
-    plt.ylabel(parameter + 'value')
-    tempFig.set_facecolor('lightgray')
-    plt.grid()
-
-
-    tempFig = plt.figure('tempfig2')
-    plt.scatter(X, gridVal, label='grid', c='magenta')
-    plt.scatter(X, bayesVal, label='bayes', c='forestgreen')
-    plt.xlabel('Permutation')
-    plt.title(parameter)
-    plt.ylabel('AUROC Value')
-    tempFig.set_facecolor('lightgray')
-    plt.grid()
-
     
-    plt.figure(fig)
+    ax1.scatter(X, gridParam, s=1.5, label='grid', c='blue')
+    ax1.scatter(X, bayesParam, s=1.5, label='bayes', c='red')
+    ax1.set_xlabel('Permutation')
+    ax1.set_title(parameter)
+    ax1.set_ylabel(parameter + 'value')
+    ax1.set_facecolor('lightgray')
+    ax1.legend()
+    ax1.grid()
+
+    ax2.scatter(X, gridVal, s = 1.5, label='grid', c='blue')
+    ax2.scatter(X, bayesVal, s = 1.5, label='bayes', c='red')
+    ax2.set_xlabel('Permutation')
+    ax2.set_title(parameter)
+    ax2.set_ylabel('AUROC Value')
+    ax2.set_facecolor('lightgray')
+    ax2.legend()
+    ax2.grid()
+
     plt.show()
 
 def GridBayesHist() : 

@@ -80,8 +80,8 @@ bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)"""
 #data = GetHeatData() # Gets data in the format that a clustermap desires
 #HeatMap(data) # Plot clustermap 
 
-grid_data, bayes_data = GetParamData('learning_rate','roc', 150)
+grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData('activation_function','roc', 290)
 
-GridBayesianComparison(grid_data[0], bayes_data[0], grid_data[1], bayes_data[1], 'Learning Rate')
+GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, 'Activation Func')
 
 #GridBayesHist()
