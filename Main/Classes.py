@@ -117,7 +117,6 @@ class EvaluationMetricsData():
                     self.TF += 1
                 else:
                     self.FP += 1
-                self.TP = 0
         self.TP = self.TP / amountOfLabels
         self.TF = self.TF / amountOfLabels
         self.FP = self.FP / amountOfLabels

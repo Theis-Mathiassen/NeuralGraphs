@@ -33,11 +33,11 @@ def flatten_json(y):
 
 # Opening JSON file and loading the data
 # into the variable data
-with open('./results/100.log.json') as json_file:
+with open('./results/Bayes2500.log.json') as json_file:
     jsondata = json.load(json_file)
  
 # now we will open a file for writing
-data_file = open('./results/100.csv', 'w', newline='')
+data_file = open('./results/Bayes2500.csv', 'w', newline='')
 
 csv_writer = csv.writer(data_file)
 
