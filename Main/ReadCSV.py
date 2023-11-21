@@ -4,7 +4,7 @@ import numpy as np
 
 def GetHeatData() :
     usecols = ["dropout_rate", "hidden_channels", "learning_rate", "batch_size","epochs","amount_of_layers","optimizer","activation_function","pooling_algorithm", "roc"]
-    csv_data = pd.read_csv("results/Combined_Grid.csv", usecols = usecols)
+    csv_data = pd.read_csv("results/CombinedNew.csv", usecols = usecols)
 
     csv_data = csv_data.head(3456*4) #Currently necessary, but final version should not include this
 
@@ -27,7 +27,7 @@ def GetParamData(parameter, score, cutoff) :
         count += 1
     usecols = (pindex, sindex)
 
-    grid_data = np.genfromtxt("results/Combined_Grid.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
+    grid_data = np.genfromtxt("results/CombinedNew.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
 
     bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
 
@@ -55,7 +55,7 @@ def GetHistData(score, cutoff = 0) :
         count += 1
 
     usecols = (index)
-    grid_data = np.genfromtxt("results/Combined_Grid.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
+    grid_data = np.genfromtxt("results/CombinedNew.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
     bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
     bayes_data = bayes_data[20:]
 
