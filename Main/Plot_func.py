@@ -217,33 +217,33 @@ def HyperParamSearchPlot(test_scores, eval_metric : str) :
     plt.show()
 
 def HeatMap(data) :
-    map = sns.clustermap(data, cmap='magma', figsize=(12, 8))
+    map = sns.clustermap(data, cmap='magma', vmin=0, vmax=1, metric='correlation', z_score=None, standard_scale=None, yticklabels=True, figsize=(12, 8))
 
     plt.show()
 
 def GridBayesianComparison(gridParam, bayesParam, gridVal, bayesVal, parameter):
     fig, (ax1, ax2) = plt.subplots(1, 2)
-    fig.set_figheight(12)
-    fig.set_figwidth(18)
+    fig.set_figheight(10)
+    fig.set_figwidth(14)
+    fig.suptitle(parameter)
+
 
     X = np.linspace(0, len(gridParam), len(gridParam))
     print(X)
 
     
     
-    ax1.scatter(X, gridParam, s=1.5, label='grid', c='blue')
-    ax1.scatter(X, bayesParam, s=1.5, label='bayes', c='red')
+    ax1.scatter(X, gridParam, s=2.5, label='grid', c='blue')
+    ax1.scatter(X, bayesParam, s=2.5, label='bayes', c='red')
     ax1.set_xlabel('Permutation')
-    ax1.set_title(parameter)
     ax1.set_ylabel(parameter + 'value')
     ax1.set_facecolor('lightgray')
     ax1.legend()
     ax1.grid()
 
-    ax2.scatter(X, gridVal, s = 1.5, label='grid', c='blue')
-    ax2.scatter(X, bayesVal, s = 1.5, label='bayes', c='red')
+    ax2.scatter(X, gridVal, s = 3.5, label='grid', c='blue')
+    ax2.scatter(X, bayesVal, s = 3.5, label='bayes', c='red')
     ax2.set_xlabel('Permutation')
-    ax2.set_title(parameter)
     ax2.set_ylabel('AUROC Value')
     ax2.set_facecolor('lightgray')
     ax2.legend()
@@ -270,7 +270,7 @@ def GridBayesHist() :
         grid_data, bayes_data = GetHistData('roc', count)
         index1 =  int(np.floor(i))
         index2 = j % 3
-        GridBayesHist(grid_data, bayes_data, ax1[index1][index2], ax2[index1][index2])
+        MakeHist(grid_data, bayes_data, ax1[index1][index2], ax2[index1][index2])
         i+=1/3
         j+=1
 
