@@ -22,13 +22,13 @@ from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
 from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
-from Plot_func import HyperParamSearchPlot
-from Plot_func import HeatMap
-from ReadCSV import GetHeatData
-from ReadCSV import GetParamData
-from Plot_func import GridBayesianComparison
-from ReadCSV import GetHistData
-from Plot_func import GridBayesHist
+#from Plot_func import HyperParamSearchPlot
+#from Plot_func import HeatMap
+#from ReadCSV import GetHeatData
+#from ReadCSV import GetParamData
+#from Plot_func import GridBayesianComparison
+#from ReadCSV import GetHistData
+#from Plot_func import GridBayesHist
 
 from tqdm import trange
 
@@ -60,8 +60,8 @@ dataset = dataset.shuffle()
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
     'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': [5, 32, 64, 128],
-    'learning_rate': [0.1, 0.01, 0.001],
+    'hidden_channels': [64],
+    'learning_rate': [0.001],
     'batch_size' : [16, 32, 64, 150],
     'epochs' : [10, 50, 100, 200],
     'amount_of_layers' : [1, 2, 3, 9],
@@ -69,6 +69,8 @@ param_grid = {
     'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
+
+grid_search(dataset, device, param_grid, DATASPLIT, 'Andreas64LR001')
 
 
 
@@ -84,6 +86,7 @@ bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)"""
 
 #GridBayesianComparison(grid_data[0], bayes_data[0], grid_data[1], bayes_data[1], 'Learning Rate')
 
+"""
 fig, ax = plt.subplots(2, 3, constrained_layout=True)
 fig.set_figheight(20)
 fig.set_figwidth(20)
@@ -101,3 +104,5 @@ for count in [100, 500, 1000, 5000, 20000, 40000]:
     j+=1
 
 plt.show()
+
+"""
