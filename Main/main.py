@@ -70,21 +70,15 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-grid_search(dataset, device, param_grid, DATASPLIT, 'Andreas64LR001')
-
-grid_search(dataset, device, param_grid, DATASPLIT, 'N128LR0.1')
-
-
 """grid_search(dataset, device, param_grid, DATASPLIT, 'N5LR0.1')
 startingPoints = 20
 iterations = 20
 bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)"""
 
-#data = GetHeatData() # Gets data in the format that a clustermap desires
-#HeatMap(data) # Plot clustermap 
+data = GetHeatData() # Gets data in the format that a clustermap desires
+HeatMap(data) # Plot clustermap 
 
-grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData('activation_function','roc', 290)
-
-GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, 'Activation Func')
+#grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData('activation_function','roc', 290)
+#GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, 'Activation Func')
 
 #GridBayesHist()
