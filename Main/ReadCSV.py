@@ -6,9 +6,11 @@ def GetHeatData() :
     usecols = ["dropout_rate", "hidden_channels", "learning_rate", "batch_size","epochs","amount_of_layers","optimizer","activation_function","pooling_algorithm", "roc"]
     csv_data = pd.read_csv("results/CombinedNew.csv", usecols = usecols)
 
-    print(csv_data)
-    #csv_data = csv_data.tail(3456*12) #Currently necessary, but final version should not include this
+    #csv_data = csv_data.tail(3456*10)
     csv_data = pd.pivot_table(csv_data, values=usecols[9], index=['dropout_rate', 'batch_size', 'hidden_channels', 'amount_of_layers'], columns=[ 'epochs', 'learning_rate', 'activation_function', 'optimizer', 'pooling_algorithm'])
+
+    csv_data.fillna(0, inplace=True) # Fills "NaN" values with 0 instead
+    csv_data = csv_data.loc[:, (csv_data != 0).any(axis=0)] # Remove all 0-entry columns. If this problem exists with rows, change axis to 1 instead
 
     return csv_data
 
