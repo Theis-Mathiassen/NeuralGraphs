@@ -10,7 +10,6 @@ def train(model_env: BaseModel, data_loader, device):
     returnData = TrainData()
 
     for data in data_loader:  # Iterates the batches. We declared each batch to be of size 64 (BATCH_SIZE_) 
-        #   print("model weights: ", model_env.model.layers[0].lin.weight[18])
         data = data.to(device, non_blocking=True)
 
         # Calculate output, and get the maximum of those in order to obtain the predicted value
@@ -47,7 +46,6 @@ def train(model_env: BaseModel, data_loader, device):
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
             returnData.train_probability_estimates.append(value[1][1])
-        #print(loss)
 
     returnData.train_accuracies = (correct/len(data_loader.dataset))
     returnData.train_losses = (loss_/i)
