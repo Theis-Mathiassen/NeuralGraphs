@@ -1,9 +1,11 @@
 #Imports
 import torch
 from torch.nn import Linear, ReLU, Sigmoid, Tanh
+import torch.nn.init as init
 import torch.nn.functional as F
 from torch_geometric.nn import Sequential
 from torch_geometric.nn import GCNConv
+from torch_geometric.nn import BatchNorm
 from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_pool
 from sklearn import metrics #Used For ROC-AUC
 from collections import OrderedDict #Used for sequential input to layers
@@ -22,12 +24,15 @@ class GCN(torch.nn.Module):
         self.learning_rate = learning_rate
         self.activation_function = activation_function
         self.pooling_algorithm = pooling_algorithm
-        
+        self.sigmoid = Sigmoid()
         # List of layers. Contains a name for the layer, the method to execute, and the function parameters
         self.layers = OrderedDict()
+        # self.batch_norm = OrderedDict() # Batch normalization
         
         # Input layer
         self.layers['conv1'] = (GCNConv(in_features, hidden_channels), 'x, edge_index -> x')
+        # self.batch_norm['conv1'] = BatchNorm(hidden_channels) # Batch normalization
+
         
         # Hidden layers
         for i in range (amount_of_layers):
@@ -42,12 +47,16 @@ class GCN(torch.nn.Module):
             
             #Add convolutional layer
             self.layers['conv'+str(i+2)] = (GCNConv(hidden_channels, hidden_channels), 'x, edge_index -> x')
+            #self.batch_norm['conv'+str(i+2)] = BatchNorm(hidden_channels) # Batch normalization
+            
         
         #Add layers to the model, including function paramters 
         self.layers = Sequential('x, edge_index', self.layers)
         
         # Output layer
         self.lin = Linear(hidden_channels, outfeatures)
+
+        #self.init_weights() # Initialize weights
 
     # Foward propagation
     def forward(self, x, edge_index, batch):
@@ -56,9 +65,18 @@ class GCN(torch.nn.Module):
 
         # 2. Readout layer
         # Picks from pooling options
-        if self.pooling_algorithm.lower() == 'mean' : x = global_mean_pool(x, batch)
-        elif self.pooling_algorithm.lower() == 'sum' : x = global_add_pool(x, batch)
-        elif self.pooling_algorithm.lower() == 'max' : x = global_max_pool(x, batch)
+        if self.pooling_algorithm.lower() == 'mean' : 
+            x = global_mean_pool(x, batch)
+            x = torch.flatten(x, 1)
+            x = self.sigmoid(x)
+        elif self.pooling_algorithm.lower() == 'sum' : 
+            x = global_add_pool(x, batch)
+            x = torch.flatten(x, 1)
+            x = self.sigmoid(x)
+        elif self.pooling_algorithm.lower() == 'max' : 
+            x = global_max_pool(x, batch)
+            x = torch.flatten(x, 1)
+            x = self.sigmoid(x)
         else : raise Exception("Invalid pooling name: " + str(self.pooling_algorithm))
         
         # 3. Apply a final classifier
@@ -66,6 +84,12 @@ class GCN(torch.nn.Module):
         x = self.lin(x)
 
         return x 
+    
+    def init_weights(self) :
+        for layer in self.modules():
+            if isinstance(layer, Linear):
+                init.xavier_uniform_(layer.weight)
+                init.zeros_(layer.bias)
 
 # model obj
 class BaseModel():
@@ -98,7 +122,7 @@ class EvaluationMetricsData():
     def __init__(self, TestData):
         self.accuracy = TestData.test_accuracy
         self.TP = 0
-        self.TF = 0
+        self.TN = 0
         self.FP = 0
         self.FN = 0
 
@@ -113,11 +137,11 @@ class EvaluationMetricsData():
                     self.FN += 1
             elif TestData.test_labels[count] == 0:     #If graph is false
                 if TestData.test_labels[count] == TestData.test_scores[count]: 
-                    self.TF += 1
+                    self.TN += 1
                 else:
                     self.FP += 1
         self.TP = self.TP / amountOfLabels
-        self.TF = self.TF / amountOfLabels
+        self.TN = self.TN / amountOfLabels
         self.FP = self.FP / amountOfLabels
         self.FN = self.FN / amountOfLabels
 
@@ -137,8 +161,12 @@ class EvaluationMetricsData():
         #AUC ROC and PR AUC
         
         #ROC fails if the TP and FP are zero
-        if (self.TP == 0 and self.FP == 0): self.roc = 0
-        else: self.roc = metrics.roc_auc_score(TestData.test_labels, TestData.test_probability_estimates)
+        if (self.TP + self.FN == 0 or self.FP + self.TN == 0): self.roc = 0 
+        else: 
+            print("labels : ", TestData.test_labels)
+            print("Predict : ", TestData.test_probability_estimates)
+            curve = metrics.roc_curve(y_true = TestData.test_labels, y_score = TestData.test_probability_estimates)
+            self.roc = metrics.auc(curve[0], curve[1])
         self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
                     
 

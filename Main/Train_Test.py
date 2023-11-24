@@ -9,7 +9,8 @@ def train(model_env: BaseModel, data_loader, device):
     i = 0
     returnData = TrainData()
 
-    for data in data_loader:  # Iterates the batches. We declared each batch to be of size 64 (BATCH_SIZE_)
+    for data in data_loader:  # Iterates the batches. We declared each batch to be of size 64 (BATCH_SIZE_) 
+        #   print("model weights: ", model_env.model.layers[0].lin.weight[18])
         data = data.to(device, non_blocking=True)
 
         # Calculate output, and get the maximum of those in order to obtain the predicted value
@@ -17,13 +18,15 @@ def train(model_env: BaseModel, data_loader, device):
         cat = torch.argmax(out, dim=1)
 
         correct += int((cat == data.y).sum())  # Check against ground-truth labels.
-        
+
         loss = model_env.loss_function(out, data.y)
         loss_ += loss.item() # append loss
-        
+
         # backpropagation
+        #torch.nn.utils.clip_grad_norm_(model_env.model.parameters(), max_norm=1) # Gradient Clipping
         loss.backward()
         model_env.optimizer.step()
+
         model_env.optimizer.zero_grad()
 
         i+=1
@@ -44,6 +47,7 @@ def train(model_env: BaseModel, data_loader, device):
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
             returnData.train_probability_estimates.append(value[1][1])
+        #print(loss)
 
     returnData.train_accuracies = (correct/len(data_loader.dataset))
     returnData.train_losses = (loss_/i)
