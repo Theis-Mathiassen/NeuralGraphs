@@ -85,7 +85,7 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
     
 
     # Create Bayesian model
-    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=111)
+    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=100 + Seed)
     
     
     

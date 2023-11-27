@@ -66,8 +66,8 @@ param_grid = {
 
 #grid_search(dataset, device, param_grid, DATASPLIT, 'DanielStationReal')
 
-startingPoints = 20
-iterations = 100
+startingPoints = 1
+iterations = 10
 
 for i in range(100):
     torch.manual_seed(i)
