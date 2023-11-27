@@ -70,7 +70,7 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-grid_search(dataset, device, param_grid, DATASPLIT, 'test')
+grid_search(dataset, device, param_grid, DATASPLIT, 'Karen3-Laptop-LR001-Neurons-64')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)
