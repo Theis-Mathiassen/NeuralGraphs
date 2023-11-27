@@ -60,8 +60,8 @@ dataset = dataset.shuffle()
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
     'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': [5, 32, 64, 128],
-    'learning_rate': [0.1, 0.01, 0.001],
+    'hidden_channels': [32],
+    'learning_rate': [0.01],
     'batch_size' : [16, 32, 64, 150],
     'epochs' : [10, 50, 100, 200],
     'amount_of_layers' : [1, 2, 3, 9],
@@ -70,7 +70,7 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-grid_search(dataset, device, param_grid, DATASPLIT, 'test')
+grid_search(dataset, device, param_grid, DATASPLIT, 'Karen3-PC-Neurons-32')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)
