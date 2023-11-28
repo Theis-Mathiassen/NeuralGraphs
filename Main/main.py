@@ -66,11 +66,11 @@ param_grid = {
 
 #grid_search(dataset, device, param_grid, DATASPLIT, 'DanielStationReal')
 
-startingPoints = 1
-iterations = 10
+startingPoints = 20
+iterations = 50
 
 for i in range(100):
-    torch.manual_seed(i)
-    Path = "./results/BayesSeed" + str(i) + ".log"
-    bayesian_search(dataset, device, param_grid, startingPoints, iterations, True, i)
+    torch.manual_seed(100 -i)
+    Path = "./results/BayesSeed" + str(100-i) + ".log"
+    bayesian_search(dataset, device, param_grid, startingPoints, iterations, True, 100 -i)
 
