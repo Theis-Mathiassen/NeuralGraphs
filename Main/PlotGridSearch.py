@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 
 # reads the data from csv file into dataframe (df)
-all_data = pd.read_csv("results/Combined_Grid_Last.csv")
+all_data = pd.read_csv("results/Grid_LastLastFr.csv")
 
 # delimits the df to the roc column
 ROC_df = all_data[['roc']]
@@ -93,28 +93,28 @@ def plot_auc_count(datasets, labels, title):
 # Plotting of all hyperparameters
 # ---------------------------------------------------------------- #
 
-"""
+
 
 # Plot for optimizers
 hyperparameters = ["SGD", "adam", "RMSprop"]
 datasets= filter_data_from_csv("optimizer", hyperparameters)
 print(datasets)
 labels = ["SGD", "ADAM", "RMSProp"]
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for all optimizers")
+plot_auc_count(datasets, labels, "Optimizers: Distribution of AUROC scores")
 
 # Plot for # of gcn layers
 hyperparameters = [1, 2, 3, 9]
 datasets= filter_data_from_csv("amount_of_layers", hyperparameters)
 print(datasets)
 labels = ["1", "2", "3", "9"]
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for all # layers")
+plot_auc_count(datasets, labels, "GCN Layers: Distribution of AUROC scores")
 
 # Plot for pooling algorithms
 hyperparameters = ["mean", "sum"]
 datasets= filter_data_from_csv("pooling_algorithm", hyperparameters)
 print(datasets)
 labels = ["Mean", "Sum"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for pooling algorithms")
+plot_auc_count(datasets, labels, "Pooling algorithms: Distribution of AUROC scores")
 
 # Plot for batch size
 hyperparameters = [16, 32, 64, 150]
@@ -159,7 +159,6 @@ print(datasets)
 labels = ["ReLU", "Sigmoid", "Tanh"] # Should be same order as hyperparameters.
 plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for AF")
 
-"""
 
 
 
