@@ -70,7 +70,7 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
+#grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)

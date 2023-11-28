@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 
 # reads the data from csv file into dataframe (df)
-all_data = pd.read_csv("results/Combined_Grid.csv")
+all_data = pd.read_csv("results/Combined_Grid_Last.csv")
 
 # delimits the df to the roc column
 ROC_df = all_data[['roc']]
