@@ -22,13 +22,8 @@ from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
 from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
-from Plot_func import HyperParamSearchPlot
-from Plot_func import HeatMap
-from ReadCSV import GetHeatData
-from ReadCSV import GetParamData
-from Plot_func import GridBayesianComparison
-from ReadCSV import GetHistData
-from Plot_func import GridBayesHist
+from Plot_func import HeatMap, GridBayesHist, GridBayesianComparison,HyperParamSearchPlot
+from ReadCSV import GetHeatData,GetHistData,GetParamData
 
 from tqdm import trange
 
