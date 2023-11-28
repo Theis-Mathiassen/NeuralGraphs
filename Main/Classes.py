@@ -163,8 +163,6 @@ class EvaluationMetricsData():
         #ROC fails if the TP and FP are zero
         if (self.TP + self.FN == 0 or self.FP + self.TN == 0): self.roc = 0 
         else: 
-            print("labels : ", TestData.test_labels)
-            print("Predict : ", TestData.test_probability_estimates)
             curve = metrics.roc_curve(y_true = TestData.test_labels, y_score = TestData.test_probability_estimates)
             self.roc = metrics.auc(curve[0], curve[1])
         self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
