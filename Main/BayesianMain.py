@@ -52,20 +52,10 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-#grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
 startingPoints = 20
 iterations = 100
 
-for i in range(45):
-    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=55+i)
-
-#data = GetHeatData() # Gets data in the format that a clustermap desires
-#HeatMap(data) # Plot clustermap 
-
-#hyper_param = 'dropout_rate' # Hyper parameter to plot : 
-#grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
-#GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, hyper_param) # Plot data
-
-#GridBayesHist()
+for i in range(50):
+    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=50+i)
 
 

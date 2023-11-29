@@ -216,7 +216,7 @@ def HyperParamSearchPlot(test_scores, eval_metric : str) :
     plt.title(eval_metric + " over permutations")
     plt.show()
 
-def HeatMap(data : df.DataFrame) :
+def HeatMap(data) :
     map = sns.clustermap(data, cmap='magma', vmin=0, vmax=1, metric='correlation', z_score=None, standard_scale=None, yticklabels=True, figsize=(12, 8))
 
     plt.show()

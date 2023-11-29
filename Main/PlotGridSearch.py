@@ -96,7 +96,7 @@ def plot_auc_count(datasets, labels, title):
 
 
 # Plot for optimizers
-hyperparameters = ["SGD", "adam", "RMSprop"]
+hyperparameters = ["SGD", "adam", "rmsprop"]
 datasets= filter_data_from_csv("optimizer", hyperparameters)
 print(datasets)
 labels = ["SGD", "ADAM", "RMSProp"]
