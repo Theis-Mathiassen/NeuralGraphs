@@ -70,9 +70,9 @@ param_grid = {
 heatMap()
 
 #grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
-#startingPoints = 20
-#iterations = 20
-#bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)
+startingPoints = 20
+iterations = 20
+bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
 
 
 #HeatMap(subsampled_results) # Plot clustermap 
@@ -82,3 +82,5 @@ heatMap()
 #GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, hyper_param) # Plot data
 
 #GridBayesHist()
+
+
