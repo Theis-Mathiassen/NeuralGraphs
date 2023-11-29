@@ -67,17 +67,13 @@ class GCN(torch.nn.Module):
         # Picks from pooling options
         if self.pooling_algorithm.lower() == 'mean' : 
             x = global_mean_pool(x, batch)
-            x = torch.flatten(x, 1)
-            x = self.sigmoid(x)
         elif self.pooling_algorithm.lower() == 'sum' : 
             x = global_add_pool(x, batch)
-            x = torch.flatten(x, 1)
-            x = self.sigmoid(x)
         elif self.pooling_algorithm.lower() == 'max' : 
             x = global_max_pool(x, batch)
-            x = torch.flatten(x, 1)
-            x = self.sigmoid(x)
         else : raise Exception("Invalid pooling name: " + str(self.pooling_algorithm))
+        x = torch.flatten(x, 1)
+        x = self.sigmoid(x)
         
         # 3. Apply a final classifier
         x = F.dropout(x, p=self.dropout_rate, training=self.training)
