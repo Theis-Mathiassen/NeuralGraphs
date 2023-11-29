@@ -1,1 +1,2 @@
 dropout_rate,hidden_channels,learning_rate,batch_size,epochs,amount_of_layers,optimizer,activation_function,pooling_algorithm,acc,f1,roc,pr,time,seed
+0.25,109,0.1,64,10,9,RMSprop,Relu,sum,0.2631578947368421,0,0,0.7368421052631579,0:00:01.120805,

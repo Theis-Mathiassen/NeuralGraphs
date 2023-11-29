@@ -52,25 +52,25 @@ dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
-    'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': [5, 32, 64, 128], #
-    'learning_rate': [0.01, 0.1, 0.001], #
-    'batch_size' : [16, 32, 64, 150],
-    'epochs' : [10, 50, 100, 200],
-    'amount_of_layers' : [1, 2, 3, 9],
-    'optimizer' : ['SGD', 'adam', 'RMSprop'],        #String key   'SGD', 'adam', 'RMSprop'
-    'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
-    'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
+    'dropout_rate': [0.25], #0.25, 0.50, 0.75
+    'hidden_channels': [109], #5, 32, 64, 128
+    'learning_rate': [0.1], #0.01, 0.1, 0.001
+    'batch_size' : [64], #16, 32, 64, 150
+    'epochs' : [10], # 10, 50, 100, 200
+    'amount_of_layers' : [9], #1, 2, 3, 9
+    'optimizer' : ['RMSprop'],        #String key   'SGD', 'adam', 'RMSprop'
+    'activation_function' : ['Relu'], #'Relu', 'sigmoid', 'tanh'
+    'pooling_algorithm' : ['sum']  #'mean', 'sum', 'max'
 }
 
 
-#grid_search(dataset, device, param_grid, DATASPLIT, 'DanielStationReal')
-
+grid_search(dataset, device, param_grid, DATASPLIT, 'DanielGridBayesianTest')
+"""
 startingPoints = 20
-iterations = 50
+iterations = 100
 
-for i in range(100):
+for i in range(1):
     torch.manual_seed(100 -i)
     Path = "./results/BayesSeed" + str(100-i) + ".log"
-    bayesian_search(dataset, device, param_grid, startingPoints, iterations, True, 100 -i)
-
+    bayesian_search(dataset, device, param_grid, startingPoints, iterations, True, i)
+"""

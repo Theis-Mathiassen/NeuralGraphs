@@ -217,7 +217,7 @@ class CSVWriter():
         self.name = path + "/" + name + ".csv"
         
         with open(self.name, 'w') as csvfile:
-            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed']
+            fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed'] #
             writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
             writer.writeheader()
             csvfile.close()
@@ -230,7 +230,7 @@ class CSVWriter():
 
     def CSVOpen(self) : 
         self.csvfile = open(self.name, 'a', newline = '')
-        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed']
+        fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed'] #
         self.writer = csv.DictWriter(self.csvfile, fieldnames = fieldnames)
 
     def CSVClose(self):
