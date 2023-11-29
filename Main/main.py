@@ -8,6 +8,7 @@ BATCH_SIZE_TRAINING = 64
 BATCH_SIZE_TESTING = 64
 
 
+from heatmap import heatMap
 import os
 import torch_geometric
 import torch
@@ -16,7 +17,8 @@ from torch_geometric.utils import to_networkx
 from torch_geometric.loader import DataLoader
 import matplotlib.pyplot as plt
 import numpy as np
-
+import seaborn
+import pandas as pd
 
 from Classes import AllData, BaseModel, GCN
 from Train_Test import train, test
@@ -65,13 +67,15 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
+heatMap()
+
 #grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterati    ons)
 
-#data = GetHeatData() # Gets data in the format that a clustermap desires
-#HeatMap(data) # Plot clustermap 
+
+#HeatMap(subsampled_results) # Plot clustermap 
 
 #hyper_param = 'dropout_rate' # Hyper parameter to plot : 
 #grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
