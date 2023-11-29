@@ -34,8 +34,8 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
     print(len(train_dataset))
     print(len(test_dataset))
 
-    BayWriter = CSVWriter("Bayes" + str(Seed))
-    BayWriter.CSVOpen()
+    BayWriter = CSVWriter("/Bayes/Bayes" + str(Seed), Seed=True)
+    BayWriter.CSVOpen(Seed=True)
 
     # adjusts parameters such that they fit the model
     def adjust_params (activation_function, amount_of_layers, batch_size, dropout_rate, epochs, hidden_channels, learning_rate, optimizer, pooling_algorithm):
@@ -103,13 +103,13 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
 
     
 
-    if (read_logs and os.path.isfile("Bayes" + str(Seed))):
+    if (read_logs and os.path.isfile("./results/Bayes/Bayes" + str(Seed))):
         # New optimizer is loaded with previously seen points
-        load_logs(bayesian_model, logs=["Bayes" + str(Seed)])
-        logger = JSONLogger(path="Bayes" + str(Seed), reset=False)
+        load_logs(bayesian_model, logs=["./results/Bayes/Bayes" + str(Seed)])
+        logger = JSONLogger(path="./results/Bayes/Bayes" + str(Seed), reset=False)
         init_points = 0
     else:
-        logger = JSONLogger(path="Bayes" + str(Seed))
+        logger = JSONLogger(path="./results/Bayes/Bayes" + str(Seed))
     
     bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
 

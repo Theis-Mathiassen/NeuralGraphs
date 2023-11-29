@@ -212,14 +212,14 @@ class AllData():
         self.test_probability_estimates.extend(data.test_probability_estimates)
 
 class CSVWriter():
-    def __init__(self, name, seed):
+    def __init__(self, name, Seed):
         # Create path if non-existent
         cwd = os.getcwd()
         path = os.path.join(cwd, 'results')
         os.makedirs(path, exist_ok=True)
 
         self.name = path + "/" + name + ".csv"
-        if(seed):
+        if(Seed):
             with open(self.name, 'w') as csvfile:
                 fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed'] #
                 writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
@@ -240,9 +240,9 @@ class CSVWriter():
     def CSVWriteRowSeed(self, row, Seed):
         self.writer.writerow({'dropout_rate': row[0], 'hidden_channels': row[1], 'learning_rate': row[2], 'batch_size': row[3], 'epochs': row[4], 'amount_of_layers': row[5], 'optimizer': row[6], 'activation_function': row[7], 'pooling_algorithm': row[8], 'acc': row[9], 'f1': row[10], 'roc': row[11], 'pr': row[12], 'time' : row[13], 'seed': Seed})
 
-    def CSVOpen(self, seed) : 
+    def CSVOpen(self, Seed) : 
         self.csvfile = open(self.name, 'a', newline = '')
-        if(seed):
+        if(Seed):
             fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time', 'seed'] #
         else:
             fieldnames = ['dropout_rate', 'hidden_channels', 'learning_rate', 'batch_size', 'epochs', 'amount_of_layers', 'optimizer', 'activation_function', 'pooling_algorithm', 'acc', 'f1', 'roc', 'pr', 'time'] #
