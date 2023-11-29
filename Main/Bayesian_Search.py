@@ -1,11 +1,22 @@
-from Classes import GCN, BaseModel, EvaluationMetricsData, StoredModel
+from Classes import GCN, BaseModel, EvaluationMetricsData, StoredModel, CSVWriter
 from Search_Model import search_model
 
 from bayes_opt import BayesianOptimization #From pip install bayesian-optimization
 
+from bayes_opt.logger import JSONLogger
+
+import os
+import datetime
+from bayes_opt.event import Events
+from bayes_opt.logger import JSONLogger
+from bayes_opt.util import load_logs
 
 
 DATASPLIT = 150
+
+
+
+
 
 # -----
 # INPUT
@@ -15,13 +26,16 @@ DATASPLIT = 150
 #   init_points : the amount of random points to set before algorithm begins
 #   n_iter : iterations of the bayesian optimization algorithm 
 # -----
-def bayesian_search (dataset, device, param_grid, init_points, n_iter):
+def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs, Seed):
     # Allocate data for training and remainder for testing 
     train_dataset = dataset[:DATASPLIT]
     test_dataset = dataset[DATASPLIT:]
 
     print(len(train_dataset))
     print(len(test_dataset))
+
+    BayWriter = CSVWriter("Bayes" + str(Seed))
+    BayWriter.CSVOpen()
 
     # adjusts parameters such that they fit the model
     def adjust_params (activation_function, amount_of_layers, batch_size, dropout_rate, epochs, hidden_channels, learning_rate, optimizer, pooling_algorithm):
@@ -43,11 +57,13 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     def black_box_function(dropout_rate, hidden_channels, learning_rate, batch_size, epochs, amount_of_layers, optimizer, activation_function, pooling_algorithm):
         # 1. Start by appropriately loading in params
         params = adjust_params(activation_function, amount_of_layers, batch_size, dropout_rate, epochs, hidden_channels, learning_rate, optimizer, pooling_algorithm)
-        
+        start = datetime.datetime.now()
         # 2. Run model
         test_data, gridModel = search_model(params, train_dataset, test_dataset, device)
-
+        end = datetime.datetime.now()
         eval_data = EvaluationMetricsData(test_data)
+        
+        BayWriter.CSVWriteRow(params=params, eval=eval_data, time=end-start)
         
         # 3. Return score (performance value: set to AUC ROC)
         return eval_data.roc
@@ -69,11 +85,35 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     
 
     # Create Bayesian model
-    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=111)
+    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=100 + Seed)
     
+    
+    
+    """
+    logger = JSONLogger(path="./results/100.log")
+    bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
+    """
+    
+
     # Maximize for target
     # init_points means the amount of initial states which randomly will be chosen within the search space
     # n_iter refers to the amount of iterations bayesian optimization will do, that are searched in the most likely area to be good
+
+
+
+    
+
+    if (read_logs and os.path.isfile("Bayes" + str(Seed))):
+        # New optimizer is loaded with previously seen points
+        load_logs(bayesian_model, logs=["Bayes" + str(Seed)])
+        logger = JSONLogger(path="Bayes" + str(Seed), reset=False)
+        init_points = 0
+    else:
+        logger = JSONLogger(path="Bayes" + str(Seed))
+    
+    bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
+
+    # Results will be saved in ./logs.log
     bayesian_model.maximize(init_points, n_iter)
     
     #Find parameters for optimal model
@@ -85,3 +125,7 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter):
     #Print out best model performance (target) + params
     print('Target measure: '+str(bayesian_model.max['target']))
     print(optimal_params)
+
+    BayWriter.CSVClose()
+
+
