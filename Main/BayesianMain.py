@@ -8,22 +8,9 @@ BATCH_SIZE_TRAINING = 64
 BATCH_SIZE_TESTING = 64
 
 
-import os
-import torch_geometric
 import torch
 from torch_geometric.datasets import TUDataset
-from torch_geometric.utils import to_networkx
-from torch_geometric.loader import DataLoader
-import matplotlib.pyplot as plt
-import numpy as np
-
-
-from Classes import AllData, BaseModel, GCN
-from Train_Test import train, test
-from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
-from Plot_func import HeatMap, GridBayesHist, GridBayesianComparison,HyperParamSearchPlot
-from ReadCSV import GetHeatData,GetHistData,GetParamData
 
 from tqdm import trange
 
@@ -69,8 +56,8 @@ param_grid = {
 startingPoints = 20
 iterations = 100
 
-for i in range(50):
-    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=i)
+for i in range(45):
+    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=55+i)
 
 #data = GetHeatData() # Gets data in the format that a clustermap desires
 #HeatMap(data) # Plot clustermap 
