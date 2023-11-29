@@ -8,22 +8,9 @@ BATCH_SIZE_TRAINING = 64
 BATCH_SIZE_TESTING = 64
 
 
-import os
-import torch_geometric
 import torch
 from torch_geometric.datasets import TUDataset
-from torch_geometric.utils import to_networkx
-from torch_geometric.loader import DataLoader
-import matplotlib.pyplot as plt
-import numpy as np
-
-
-from Classes import AllData, BaseModel, GCN
-from Train_Test import train, test
-from Grid_Search import grid_search
 from Bayesian_Search import bayesian_search
-from Plot_func import HeatMap, GridBayesHist, GridBayesianComparison,HyperParamSearchPlot
-from ReadCSV import GetHeatData,GetHistData,GetParamData
 
 from tqdm import trange
 
@@ -65,20 +52,10 @@ param_grid = {
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-#grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
 startingPoints = 20
 iterations = 100
 
 for i in range(50):
-    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=i)
-
-#data = GetHeatData() # Gets data in the format that a clustermap desires
-#HeatMap(data) # Plot clustermap 
-
-#hyper_param = 'dropout_rate' # Hyper parameter to plot : 
-#grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
-#GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, hyper_param) # Plot data
-
-#GridBayesHist()
+    bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=50+i)
 
 
