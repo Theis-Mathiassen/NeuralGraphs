@@ -100,21 +100,21 @@ hyperparameters = ["SGD", "adam", "rmsprop"]
 datasets= filter_data_from_csv("optimizer", hyperparameters)
 print(datasets)
 labels = ["SGD", "ADAM", "RMSProp"]
-plot_auc_count(datasets, labels, "Optimizers: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Optimizers")
 
 # Plot for # of gcn layers
 hyperparameters = [1, 2, 3, 9]
 datasets= filter_data_from_csv("amount_of_layers", hyperparameters)
 print(datasets)
 labels = ["1", "2", "3", "9"]
-plot_auc_count(datasets, labels, "GCN Layers: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for GCN Layers")
 
 # Plot for pooling algorithms
 hyperparameters = ["mean", "sum"]
 datasets= filter_data_from_csv("pooling_algorithm", hyperparameters)
 print(datasets)
 labels = ["Mean", "Sum"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Pooling algorithms: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Pooling Algorithms")
 
 # Plot for batch size
 hyperparameters = [16, 32, 64, 150]
@@ -129,7 +129,7 @@ hyperparameters = [0.1, 0.01, 0.001]
 datasets= filter_data_from_csv("learning_rate", hyperparameters)
 print(datasets)
 labels = ["0.1", "0.01", "0.001"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for LR")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Learning Rate")
 
 # Plot for number of neurons
 hyperparameters = [5, 32, 64, 128]
