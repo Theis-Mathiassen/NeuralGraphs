@@ -82,8 +82,42 @@ def test(model_env: BaseModel, data_loader, device):
 
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
-        for value in enumerate(arrayPred):
-            returnData.test_probability_estimates.append(value[1][1])
+        for value in arrayPred:
+            returnData.test_probability_estimates.append(value[1])
+
+    returnData.test_accuracy = (correct/len(data_loader.dataset))
+    returnData.test_losses = (loss_/ i)
+    
+    return returnData
+
+
+
+# similar to test, but without bacpropagation (gradients)
+def test_threshold(model_env: BaseModel, data_loader, device, threshold):
+    model_env.model.eval()
+    correct = 0
+    loss_ = 0
+    i = 0
+    returnData = TestData()
+
+    for data in data_loader:  # Iterate in batches over the training/test dataset.
+        data = data.to(device, non_blocking=True)
+        out = model_env.model(data.x, data.edge_index, data.batch)
+        
+
+        # Turn output tensor into numpy array
+        arrayPred = out.detach().cpu().numpy()
+        
+        guesses = np.arange(len(arrayPred))
+        for j in range(len(arrayPred)):
+            guesses[j] = (1 if arrayPred[j][1] > threshold  else 0)
+            if (guesses[j] == data.y[j]):
+                correct += 1
+
+        loss = model_env.loss_function(out, data.y)
+        loss_ += loss.item()
+
+        i+=1
 
     returnData.test_accuracy = (correct/len(data_loader.dataset))
     returnData.test_losses = (loss_/ i)

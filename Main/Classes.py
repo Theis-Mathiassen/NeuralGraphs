@@ -160,9 +160,12 @@ class EvaluationMetricsData():
         #ROC fails if the TP and FP are zero
         if (self.TP + self.FN == 0 or self.FP + self.TN == 0): self.roc = 0 
         else: 
-            curve = metrics.roc_curve(y_true = TestData.test_labels, y_score = TestData.test_probability_estimates)
-            self.roc = metrics.auc(curve[0], curve[1])
+            self.fprs, self.tprs, self.thresholds = metrics.roc_curve(y_true = TestData.test_labels, y_score = TestData.test_probability_estimates)
+            self.roc = metrics.auc(self.fprs, self.tprs)
         self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
+    
+    def __str__(self):
+        return f'Evaldata: (acc:{self.accuracy}, TP:{self.TP}, TN:{self.TN}, FP:{self.FP}, FN:{self.FN}, TPR:{self.TPR}, FPR:{self.FPR}, PREC:{self.PREC}, F1:{self.f1}, ROC:{self.roc}, PR:{self.pr})'
                     
 
 class StoredModel():
