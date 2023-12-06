@@ -113,10 +113,14 @@ class TestData():
         self.test_scores = []       #Model Guesses
         self.test_labels = []       #Truths
         self.test_probability_estimates = []
+    def __str__(self):
+        return f'TestData: (test_losses:{self.test_losses}, test_accuracy:{self.test_accuracy}, test_scores:{self.test_scores}, test_labels:{self.test_labels}, test_probability_estimates:{self.test_probability_estimates})'
+    
 
 # Data covering different evaluation metrics based on input TestData
 class EvaluationMetricsData():
     def __init__(self, TestData):
+        self.TestData = TestData
         self.accuracy = TestData.test_accuracy
         self.TP = 0
         self.TN = 0
@@ -165,7 +169,7 @@ class EvaluationMetricsData():
         self.pr = metrics.average_precision_score(TestData.test_labels, TestData.test_scores)
     
     def __str__(self):
-        return f'Evaldata: (acc:{self.accuracy}, TP:{self.TP}, TN:{self.TN}, FP:{self.FP}, FN:{self.FN}, TPR:{self.TPR}, FPR:{self.FPR}, PREC:{self.PREC}, F1:{self.f1}, ROC:{self.roc}, PR:{self.pr})'
+        return f'Evaldata: (acc:{self.accuracy}, TP:{self.TP}, TN:{self.TN}, FP:{self.FP}, FN:{self.FN}, TPR:{self.TPR}, FPR:{self.FPR}, PREC:{self.PREC}, F1:{self.f1}, ROC:{self.roc}, PR:{self.pr}, TPR:{self.tprs}, {self.TestData})'
                     
 
 class StoredModel():

@@ -93,7 +93,7 @@ def test(model_env: BaseModel, data_loader, device):
 
 
 # similar to test, but without bacpropagation (gradients)
-def test_threshold(model_env: BaseModel, data_loader, device, threshold):
+def test_threshold(model_env: BaseModel, data_loader, device, threshold, invert):
     model_env.model.eval()
     correct = 0
     loss_ = 0
@@ -111,8 +111,14 @@ def test_threshold(model_env: BaseModel, data_loader, device, threshold):
         guesses = np.arange(len(arrayPred))
         for j in range(len(arrayPred)):
             guesses[j] = (1 if arrayPred[j][1] > threshold  else 0)
-            if (guesses[j] == data.y[j]):
-                correct += 1
+            if (invert != (guesses[j] == data.y[j])):
+                    correct += 1
+            #if (guesses[j] == data.y[j]):
+            #    if (invert == False):
+            #        correct += 1
+            #if (guesses[j] != data.y[j]):
+            #    if (invert == True):
+            #        correct += 1
 
         loss = model_env.loss_function(out, data.y)
         loss_ += loss.item()

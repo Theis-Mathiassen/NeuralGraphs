@@ -55,24 +55,26 @@ torch.manual_seed(MANUAL_SEED)
 dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
+#0.75	5	0.01	150	10	9	SGD	sigmoid	sum
+
 param_grid = {
-    'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': [128],
+    'dropout_rate': [0.75],
+    'hidden_channels': [5],
     'learning_rate': [0.01],
-    'batch_size' : [16, 32, 64, 150],
-    'epochs' : [10, 50, 100, 200],
-    'amount_of_layers' : [1, 2, 3, 9],
-    'optimizer' : ['SGD', 'adam', 'rmsprop'],        #String key   'SGD', 'adam', 'RMSprop'
-    'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
-    'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
+    'batch_size' : [150],
+    'epochs' : [10],
+    'amount_of_layers' : [9],
+    'optimizer' : ['SGD'],        #String key   'SGD', 'adam', 'RMSprop'
+    'activation_function' : ['sigmoid'], #'Relu', 'sigmoid', 'tanh'
+    'pooling_algorithm' : ['sum']  #'mean', 'sum', 'max'
 }
 
-heatMap()
+#heatMap()
 
-#grid_search(dataset, device, param_grid, DATASPLIT, 'VestaNew_HC-128_LR-0.01')
-startingPoints = 20
-iterations = 20
-bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
+grid_search(dataset, device, param_grid, DATASPLIT, 'test')
+#startingPoints = 20
+#iterations = 20
+#bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
 
 
 #HeatMap(subsampled_results) # Plot clustermap 

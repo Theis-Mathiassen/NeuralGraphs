@@ -32,8 +32,8 @@ def find_best(model, params, eval_data, best_accuracy, best_f1, best_roc, best_p
         best_pr.update(eval_data.roc, model, params)
 
 def grid_search (dataset, device, param_grid, datasplit, filename):
-    csv_class = CSVWriter(filename)
-    csv_class.CSVOpen()
+    csv_class = CSVWriter(filename, False)
+    csv_class.CSVOpen(False)
 
     #StoredModel for each of the evalutationMetrics
     best_accuracy = StoredModel()
