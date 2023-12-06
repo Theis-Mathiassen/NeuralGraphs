@@ -13,7 +13,7 @@ This project is a graph convolutional network for the MUTAG dataset, which allow
 ## Overview
 
 This project is made alongside a semester project report for AAU, focusing on graph convolutional networks. 
-It generates a GNN model for the MUTAG dataset, while providing insightful information, and visualizations. 
+It generates a GNN model for the MUTAG dataset, while providing tools to gather insightful information, and visualizations. 
 The hyperparameters can easily be adjusted for experimentation.
 
 ## Features
@@ -23,7 +23,7 @@ The hyperparameters can easily be adjusted for experimentation.
 - Trains a graph covolutional network
 - Measures the accuracy and loss over time
 - Plots the AUC - ROC and AUC - PR curve
-- Can compare differnet hyperparameters (Revisit this if unable to complete)
+<!-- - Can compare differnet hyperparameters (Revisit this if unable to complete) -->
 
 ## Getting Started
 
@@ -36,8 +36,12 @@ To run this program it requires python, along with the following libraries.
 - PyTorch
 - networkX
 - numpy
+- pandas
 - sklearn
 - matplotlib
+- Bayesian_Search
+- csv
+- seaborn
 
   
 ## Contributing
