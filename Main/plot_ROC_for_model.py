@@ -56,34 +56,36 @@ dataset = dataset.shuffle()
 train_dataset = dataset[:DATASPLIT]
 test_dataset = dataset[DATASPLIT:]
 
+#'activation_function': 'tanh', 'amount_of_layers': 1, 'batch_size': 150, 'dropout_rate': 0.75, 'epochs': 10, 'hidden_channels': 32, 'learning_rate': 0.1, 'optimizer': 'adam', 'pooling_algorithm': 'mean'
 param_strings = [
-'0.25	128	0.01	150	50	3	SGD	relu	mean'.split('\t'),
-'0.75	64	0.01	32	50	2	rmsprop	sigmoid	mean'.split('\t'),
-'0.25	128	0.1	16	50	2	adam	sigmoid	sum'.split('\t'),
-'0.25	32	0.001	150	50	9	SGD	relu	mean'.split('\t'),
-'0.75	64	0.1	16	200	9	RMSprop	relu	mean'.split('\t'),
-'0.75	64	0.1	16	100	1	RMSprop	relu	mean'.split('\t'),
-'0.5	64	0.1	32	10	2	RMSprop	sigmoid	sum'.split('\t'),
-'0.75	5	0.01	16	100	9	adam	tanh	sum'.split('\t'),
-'0.75	32	0.01	150	10	9	adam	relu	mean'.split('\t'),
-'0.25	32	0.01	16	200	2	rmsprop	tanh	sum'.split('\t'),
-'0.5	32	0.01	16	200	3	rmsprop	tanh	sum'.split('\t'),
-'0.75	32	0.01	16	200	3	rmsprop	tanh	sum'.split('\t'),
-'0.5	32	0.01	32	200	9	rmsprop	tanh	sum'.split('\t'),
-'0.75	128	0.1	16	200	1	rmsprop	tanh	sum'.split('\t'),
-'0.75	32	0.1	150	10	1	adam	tanh	mean'.split('\t'),
-'0.25	128	0.1	150	10	2	rmsprop	tanh	mean'.split('\t'),
-'0.25	128	0.01	16	10	3	adam	sigmoid	sum'.split('\t'),
-'0.25	128	0.01	150	100	1	SGD	tanh	mean'.split('\t'),
-'0.75	128	0.01	150	100	1	SGD	tanh	mean'.split('\t'),
-'0.75	5	0.01	16	200	2	SGD	relu	sum'.split('\t'),
-'0.5	5	0.1	64	50	1	SGD	sigmoid	sum'.split('\t'),
-'0.25	5	0.01	16	100	2	SGD	relu	sum'.split('\t'),
-'0.25	32	0.1	16	200	3	adam	tanh	sum'.split('\t'),
-'0.5	128	0.01	150	100	9	adam	relu	sum'.split('\t'),
-'0.25	32	0.01	150	100	9	adam	relu	sum'.split('\t'),
-'0.75	32	0.01	150	10	2	SGD	tanh	sum'.split('\t'),
-'0.75	64	0.01	16	10	9	SGD	tanh	sum'.split('\t'),
+                    '0.25	128	0.01	150	50	3	SGD	relu	mean'.split('\t'),
+                    '0.75	64	0.01	32	50	2	rmsprop	sigmoid	mean'.split('\t'),
+                    '0.25	128	0.1	16	50	2	adam	sigmoid	sum'.split('\t'),
+                    '0.25	32	0.001	150	50	9	SGD	relu	mean'.split('\t'),
+                    '0.75	64	0.1	16	200	9	RMSprop	relu	mean'.split('\t'),
+                    '0.75	64	0.1	16	100	1	RMSprop	relu	mean'.split('\t'),
+                    '0.5	64	0.1	32	10	2	RMSprop	sigmoid	sum'.split('\t'),
+                    '0.75	5	0.01	16	100	9	adam	tanh	sum'.split('\t'),
+                    '0.75	32	0.01	150	10	9	adam	relu	mean'.split('\t'),
+                    '0.25	32	0.01	16	200	2	rmsprop	tanh	sum'.split('\t'),
+                    '0.5	32	0.01	16	200	3	rmsprop	tanh	sum'.split('\t'),
+                    '0.75	32	0.01	16	200	3	rmsprop	tanh	sum'.split('\t'),
+                    '0.5	32	0.01	32	200	9	rmsprop	tanh	sum'.split('\t'),
+                    '0.75	128	0.1	16	200	1	rmsprop	tanh	sum'.split('\t'),
+                    '0.75	32	0.1	150	10	1	adam	tanh	mean'.split('\t'),
+                    '0.25	128	0.1	150	10	2	rmsprop	tanh	mean'.split('\t'),
+                    '0.25	128	0.01	16	10	3	adam	sigmoid	sum'.split('\t'),
+                    '0.25	128	0.01	150	100	1	SGD	tanh	mean'.split('\t'),
+                    '0.75	128	0.01	150	100	1	SGD	tanh	mean'.split('\t'),
+                    '0.75	5	0.01	16	200	2	SGD	relu	sum'.split('\t'),
+                    '0.5	5	0.1	64	50	1	SGD	sigmoid	sum'.split('\t'),
+                    '0.25	5	0.01	16	100	2	SGD	relu	sum'.split('\t'),
+                    '0.25	32	0.1	16	200	3	adam	tanh	sum'.split('\t'),
+                    '0.5	128	0.01	150	100	9	adam	relu	sum'.split('\t'),
+                    '0.25	32	0.01	150	100	9	adam	relu	sum'.split('\t'),
+                    '0.75	32	0.01	150	10	2	SGD	tanh	sum'.split('\t'),
+                    '0.75	64	0.01	16	10	9	SGD	tanh	sum'.split('\t'),
+                    '0.5	5	0.1	32	200	2	SGD	sigmoid	sum'.split('\t'),
                  ]
 number = 0
 
@@ -118,7 +120,7 @@ for param_string in param_strings:
 
         gmeans = []
         for i in range(len(eval_data.tprs)):
-            gmeans.append(math.sqrt((eval_data.tprs[i])**2 + (1-eval_data.fprs[i])**2))
+            gmeans.append(math.sqrt(eval_data.tprs[i] * (1-eval_data.fprs[i]) if not invert else (1-eval_data.tprs[i]) * (eval_data.fprs[i])))
         
         ix = np.argmax(gmeans)
         
