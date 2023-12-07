@@ -32,7 +32,7 @@ if torch.cuda.is_available():
     device = torch.device('cuda')
 else:
     device = torch.device('cpu')
-#device = torch.device('cpu')
+
 print(device)
 
 # Set seed: manual
@@ -41,21 +41,21 @@ dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
 param_grid = {
-    'dropout_rate': [0.25, 0.50, 0.75],
+    'dropout_rate': [0, 0.50, 0.99],
     'hidden_channels': [5, 32, 64, 128],
-    'learning_rate': [0.1 ,0.01, 0.001 ],
-    'batch_size' : [16, 32, 64, 150],
+    'learning_rate': [1 ,0.01, 0.0001 ],
+    'batch_size' : [32, 64, 150],
     'epochs' : [10, 50, 100, 200],
-    'amount_of_layers' : [1, 2, 3, 9],
+    'amount_of_layers' : [1, 2, 3, 15],
     'optimizer' : ['SGD', 'adam', 'rmsprop'],        #String key   'SGD', 'adam', 'RMSprop'
     'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
     'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
 
-startingPoints = 20
-iterations = 100
+startingPoints = 2
+iterations = 2
 
-for i in range(20):
+for i in range(1):
     bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=i)
 
 

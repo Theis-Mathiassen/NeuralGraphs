@@ -218,7 +218,7 @@ class CSVWriter():
     def __init__(self, name, Seed):
         # Create path if non-existent
         cwd = os.getcwd()
-        path = os.path.join(cwd, 'results')
+        path = os.path.join(cwd, 'csvfiles')
         os.makedirs(path, exist_ok=True)
 
         self.name = path + "/" + name + ".csv"

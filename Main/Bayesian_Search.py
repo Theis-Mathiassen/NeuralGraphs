@@ -26,15 +26,17 @@ DATASPLIT = 150
 #   init_points : the amount of random points to set before algorithm begins
 #   n_iter : iterations of the bayesian optimization algorithm 
 # -----
-def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs, Seed):
+def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs, Seed = 1, Path = "./result"):
     # Allocate data for training and remainder for testing 
     train_dataset = dataset[:DATASPLIT]
     test_dataset = dataset[DATASPLIT:]
-
+    """
     print(len(train_dataset))
     print(len(test_dataset))
+    """
+    SeedPath = Path + str(Seed)
 
-    BayWriter = CSVWriter("/Bayes/Bayes" + str(Seed), Seed=True)
+    BayWriter = CSVWriter(SeedPath, Seed=True)
     BayWriter.CSVOpen(Seed=True)
 
     # adjusts parameters such that they fit the model
@@ -85,14 +87,7 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
     
 
     # Create Bayesian model
-    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=100 + Seed)
-    
-    
-    
-    """
-    logger = JSONLogger(path="./results/100.log")
-    bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
-    """
+    bayesian_model = BayesianOptimization(black_box_function, pbounds, random_state=Seed)
     
 
     # Maximize for target
@@ -103,15 +98,15 @@ def bayesian_search (dataset, device, param_grid, init_points, n_iter, read_logs
 
     
 
-    if (read_logs and os.path.isfile("./results/Bayes/Bayes" + str(Seed))):
+    """if (read_logs and os.path.isfile(SeedPath)):
         # New optimizer is loaded with previously seen points
-        load_logs(bayesian_model, logs=["./results/Bayes/Bayes" + str(Seed)])
-        logger = JSONLogger(path="./results/Bayes/Bayes" + str(Seed), reset=False)
+        load_logs(bayesian_model, logs=[SeedPath])
+        logger = JSONLogger(path=SeedPath, reset=False)
         init_points = 0
     else:
-        logger = JSONLogger(path="./results/Bayes/Bayes" + str(Seed))
+        logger = JSONLogger(path=SeedPath)"""
     
-    bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
+    #bayesian_model.subscribe(Events.OPTIMIZATION_STEP, logger)
 
     # Results will be saved in ./logs.log
     bayesian_model.maximize(init_points, n_iter)
