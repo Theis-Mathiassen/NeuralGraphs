@@ -39,3 +39,5 @@ for i in range(30):
             if(line_count > 21):
                 BayesCombined.CSVWriteRowSeed(row, 100 + i + 70)
             line_count += 1
+
+BayesCombined.CSVClose()

@@ -39,4 +39,4 @@ def search_model(params, train_dataset, test_dataset, device) :
             train(baseModel, train_loader, device)
         test_data = test(baseModel, test_loader, device)
 
-        return test_data, model
+        return test_data, baseModel

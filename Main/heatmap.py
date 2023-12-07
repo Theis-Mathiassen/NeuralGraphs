@@ -40,4 +40,3 @@ def heatMap():
     plt.title('ROC Heatmap')
     plt.show()
 
-heatMap()
