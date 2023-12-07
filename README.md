@@ -45,7 +45,7 @@ To run this program it requires python, along with the following libraries.
 
   
 ## Contributing
-This project was made by Andreas W. Holt, Daniel H. Hansen, Frederik Melchiors, Karen M. Andersen, Mikkel D. Bjørn, and Their R. Mathiassen. 
+This project was made by Andreas W. Holt, Daniel H. Hansen, Frederik Melchiors, Karen M. Andersen, Mikkel D. Bjørn, and Theis R. Mathiassen. 
 
 
 ## License 
