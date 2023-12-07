@@ -157,7 +157,7 @@ hyperparameters = ["relu", "sigmoid", "tanh"]
 datasets= filter_data_from_csv("activation_function", hyperparameters)
 print(datasets)
 labels = ["ReLU", "Sigmoid", "Tanh"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for AF")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Activation Functions")
 
 
 
