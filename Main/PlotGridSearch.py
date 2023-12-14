@@ -7,6 +7,7 @@ import pandas as pd
 # reads the data from csv file into dataframe (df)
 all_data = pd.read_csv("results/Grid_LastLastFr.csv")
 
+NUM_RANGES = 50
 # delimits the df to the roc column
 ROC_df = all_data[['roc']]
 
@@ -73,22 +74,40 @@ def create_ranges(data, num_ranges=100):
 
 def plot_auc_count(datasets, labels, title):
     # Plotting
+    colors = [ "black", "springgreen", "red", "blue"]
+    n = 4-len(datasets)
+    c = colors[n:]
+    counts = np.ndarray(shape = (len(datasets), NUM_RANGES))
+    bins = np.ndarray(shape = (len(datasets), NUM_RANGES+1))
+    also_bins = np.ndarray(shape = (len(datasets), NUM_RANGES))
+    X = np.linspace(0, 1, NUM_RANGES)
+    plt.figure(figsize = (12, 8))
     for i, dataset in enumerate(datasets):
-        counts_in_ranges, value_ranges = create_ranges(dataset)
-        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
-        plt.legend(loc='upper left')
+        #counts_in_ranges, value_ranges = create_ranges(dataset)
+        #plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
+        counts[i], bins[i] = np.histogram(dataset, bins=NUM_RANGES)
+        #plt.hist(bins[:-1, ], bins, weights=counts, label=labels[i])
+    for i in range(0, len(bins)):
+        for j in range(0, len(bins[i])-1): 
+            also_bins[i][j] = bins[i][j] 
+
+    for i in range(0, len(also_bins)):
+        plt.hist(also_bins[i], X, weights = counts[i], fill = True, label=labels[i], color=c[i], alpha = 0.2, edgecolor = c[i])
+    # plt.hist(also_bins, X, weights=counts, labels = labels, color = c) # Doesnt work
+    plt.legend(loc='upper left')
 
 
     plt.title('{}.'.format(title))
     plt.xlabel('AUROC')
-    plt.ylabel('Number of models')
+    plt.ylabel('Number of configurations')
 
     tick_positions = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     plt.xticks(tick_positions)
+    plt.grid()
 
-    plt.show()
+    #plt.show()
 
-
+    plt.savefig("{}.".format(title))
 # ---------------------------------------------------------------- #
 # Plotting of all hyperparameters
 # ---------------------------------------------------------------- #
@@ -100,21 +119,21 @@ hyperparameters = ["SGD", "adam", "rmsprop"]
 datasets= filter_data_from_csv("optimizer", hyperparameters)
 print(datasets)
 labels = ["SGD", "ADAM", "RMSProp"]
-plot_auc_count(datasets, labels, "Optimizers: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Optimizers")
 
 # Plot for # of gcn layers
 hyperparameters = [1, 2, 3, 9]
 datasets= filter_data_from_csv("amount_of_layers", hyperparameters)
 print(datasets)
 labels = ["1", "2", "3", "9"]
-plot_auc_count(datasets, labels, "GCN Layers: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for GCN Layers")
 
 # Plot for pooling algorithms
 hyperparameters = ["mean", "sum"]
 datasets= filter_data_from_csv("pooling_algorithm", hyperparameters)
 print(datasets)
 labels = ["Mean", "Sum"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Pooling algorithms: Distribution of AUROC scores")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Pooling Algorithms")
 
 # Plot for batch size
 hyperparameters = [16, 32, 64, 150]
@@ -129,7 +148,7 @@ hyperparameters = [0.1, 0.01, 0.001]
 datasets= filter_data_from_csv("learning_rate", hyperparameters)
 print(datasets)
 labels = ["0.1", "0.01", "0.001"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for LR")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Learning Rate")
 
 # Plot for number of neurons
 hyperparameters = [5, 32, 64, 128]
@@ -157,7 +176,7 @@ hyperparameters = ["relu", "sigmoid", "tanh"]
 datasets= filter_data_from_csv("activation_function", hyperparameters)
 print(datasets)
 labels = ["ReLU", "Sigmoid", "Tanh"] # Should be same order as hyperparameters.
-plot_auc_count(datasets, labels, "Occurences of a given ROC score within a range for AF")
+plot_auc_count(datasets, labels, "Distribution of AUROC Scores for Activation Functions")
 
 
 
