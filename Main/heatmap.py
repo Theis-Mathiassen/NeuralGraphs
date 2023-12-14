@@ -1,6 +1,10 @@
 import pandas as pd
 import seaborn
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+
+mpl.rcParams['figure.dpi'] = 400
 
 def GetHeatData() :
     usecols = ["dropout_rate", "hidden_channels", "learning_rate", "batch_size","epochs","amount_of_layers","optimizer","activation_function","pooling_algorithm", "roc"]
@@ -33,11 +37,21 @@ def heatMap():
     #subsampled_results = csv_data.sample(n=1000, replace=False)
 
     # Create the heatmap
-    heatmap_data = csv_data[columns_to_include].pivot_table(index=['optimizer', 'learning_rate'], columns=['pooling_algorithm', 'activation_function', 'amount_of_layers'], values='roc')
+    heatmap_data = csv_data[columns_to_include].pivot_table(aggfunc="mean", index=['optimizer', 'learning_rate'], columns=['pooling_algorithm', 'activation_function', 'amount_of_layers'], values='roc')
     print(heatmap_data)
-    seaborn.heatmap(heatmap_data, annot=True, cmap='viridis')
+    seaborn.set(font_scale=0.35)
+    ax = seaborn.heatmap(heatmap_data, annot=True, cmap='viridis')
 
-    plt.title('ROC Heatmap')
+# Rotate the x-axis tick labels
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+
+# Rotate and align the y-axis tick labels
+    ax.set_yticklabels(ax.get_yticklabels(), rotation=0, va='center')
+    
+
+    plt.title('Heatmap: AUC-ROC')
+    #plt.savefig(f'./results/heatmap.png', format='png', dpi=400)
+
     plt.show()
 
 heatMap()
