@@ -7,6 +7,7 @@ import pandas as pd
 # reads the data from csv file into dataframe (df)
 all_data = pd.read_csv("results/Grid_LastLastFr.csv")
 
+NUM_RANGES = 50
 # delimits the df to the roc column
 ROC_df = all_data[['roc']]
 
@@ -73,22 +74,40 @@ def create_ranges(data, num_ranges=100):
 
 def plot_auc_count(datasets, labels, title):
     # Plotting
+    colors = [ "black", "springgreen", "red", "blue"]
+    n = 4-len(datasets)
+    c = colors[n:]
+    counts = np.ndarray(shape = (len(datasets), NUM_RANGES))
+    bins = np.ndarray(shape = (len(datasets), NUM_RANGES+1))
+    also_bins = np.ndarray(shape = (len(datasets), NUM_RANGES))
+    X = np.linspace(0, 1, NUM_RANGES)
+    plt.figure(figsize = (12, 8))
     for i, dataset in enumerate(datasets):
-        counts_in_ranges, value_ranges = create_ranges(dataset)
-        plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
-        plt.legend(loc='upper left')
+        #counts_in_ranges, value_ranges = create_ranges(dataset)
+        #plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
+        counts[i], bins[i] = np.histogram(dataset, bins=NUM_RANGES)
+        #plt.hist(bins[:-1, ], bins, weights=counts, label=labels[i])
+    for i in range(0, len(bins)):
+        for j in range(0, len(bins[i])-1): 
+            also_bins[i][j] = bins[i][j] 
+
+    for i in range(0, len(also_bins)):
+        plt.hist(also_bins[i], X, weights = counts[i], fill = True, label=labels[i], color=c[i], alpha = 0.2, edgecolor = c[i])
+    # plt.hist(also_bins, X, weights=counts, labels = labels, color = c) # Doesnt work
+    plt.legend(loc='upper left')
 
 
     plt.title('{}.'.format(title))
     plt.xlabel('AUROC')
-    plt.ylabel('Number of models')
+    plt.ylabel('Number of configurations')
 
     tick_positions = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     plt.xticks(tick_positions)
+    plt.grid()
 
-    plt.show()
+    #plt.show()
 
-
+    plt.savefig("{}.".format(title))
 # ---------------------------------------------------------------- #
 # Plotting of all hyperparameters
 # ---------------------------------------------------------------- #
