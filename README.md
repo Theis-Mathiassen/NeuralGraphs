@@ -18,6 +18,7 @@ The hyperparameters can easily be adjusted for experimentation.
 
 ## Features
 
+- Can run Bayesian optimization and grid search over a given search space
 - Prints out relevant information from dataset
 - Visualization of graphs from dataset
 - Trains a graph covolutional network
