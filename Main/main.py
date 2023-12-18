@@ -76,9 +76,6 @@ grid_search(dataset, device, param_grid, DATASPLIT, 'test')
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
 
-
-#HeatMap(subsampled_results) # Plot clustermap 
-
 #hyper_param = 'dropout_rate' # Hyper parameter to plot : 
 #grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
 #GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, hyper_param) # Plot data
