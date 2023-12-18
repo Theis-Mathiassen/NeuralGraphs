@@ -1,5 +1,3 @@
-best = [174, 130, 125, 158, 138]
-
 import matplotlib.pyplot as plt 
 import csv 
   
