@@ -3,7 +3,7 @@ import numpy as np
 
 def GetHeatData() :
     usecols = ["dropout_rate", "hidden_channels", "learning_rate", "batch_size","epochs","amount_of_layers","optimizer","activation_function","pooling_algorithm", "roc"]
-    csv_data = pd.read_csv("results/CombinedNew.csv", usecols = usecols)
+    csv_data = pd.read_csv("results/Grid_LastLastFr.csv", usecols = usecols)
 
     #csv_data = csv_data.tail(3456*10)
     csv_data = pd.pivot_table(csv_data, values=usecols[9], index=['dropout_rate', 'batch_size', 'hidden_channels', 'amount_of_layers'], columns=[ 'epochs', 'learning_rate', 'activation_function', 'optimizer', 'pooling_algorithm'])
@@ -28,9 +28,9 @@ def GetParamData(parameter, score, cutoff) :
         count += 1
     usecols = (pindex, sindex)
 
-    grid_data = np.genfromtxt("results/CombinedNew.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
+    grid_data = np.genfromtxt("results/Grid_LastLastFr.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
 
-    bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
+    bayes_data = np.genfromtxt("results/BayesCombined.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
     bayes_data = bayes_data[20:]
     grid_data_s = np.empty(len(grid_data))
     grid_data_p = np.empty(len(grid_data))
@@ -56,8 +56,8 @@ def GetHistData(score, cutoff = 0) :
         count += 1
 
     usecols = (index)
-    grid_data = np.genfromtxt("results/CombinedNew.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
-    bayes_data = np.genfromtxt("results/bayes_data.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
+    grid_data = np.genfromtxt("results/Grid_LastLastFr.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff)
+    bayes_data = np.genfromtxt("results/BayesCombined.csv", usecols=usecols, skip_header=True, delimiter=',', max_rows = cutoff+20)
     bayes_data = bayes_data[20:]
 
     return grid_data, bayes_data

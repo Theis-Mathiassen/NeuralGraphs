@@ -1,2 +1,0 @@
-dropout_rate,hidden_channels,learning_rate,batch_size,epochs,amount_of_layers,optimizer,activation_function,pooling_algorithm,acc,f1,roc,pr,time
-0.75,5,0.01,150,10,9,SGD,sigmoid,sum,0.7368421052631579,0.8484848484848484,0.0982142857142857,0.7368421052631579,0:00:00.318760

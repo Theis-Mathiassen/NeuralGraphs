@@ -50,7 +50,6 @@ torch.manual_seed(MANUAL_SEED)
 dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
-#0.75	5	0.01	150	10	9	SGD	sigmoid	sum
 
 param_grid = {
     'dropout_rate': [0.75],
