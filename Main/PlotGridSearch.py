@@ -46,17 +46,13 @@ def plot_auc_count(datasets, labels, title):
     X = np.linspace(0, 1, NUM_RANGES)
     plt.figure(figsize = (12, 8))
     for i, dataset in enumerate(datasets):
-        #counts_in_ranges, value_ranges = create_ranges(dataset)
-        #plt.plot(value_ranges[:-1], counts_in_ranges, linestyle='-', label="{}".format(labels[i]))
         counts[i], bins[i] = np.histogram(dataset, bins=NUM_RANGES)
-        #plt.hist(bins[:-1, ], bins, weights=counts, label=labels[i])
     for i in range(0, len(bins)):
         for j in range(0, len(bins[i])-1): 
             also_bins[i][j] = bins[i][j] 
 
     for i in range(0, len(also_bins)):
         plt.hist(also_bins[i], X, weights = counts[i], fill = True, label=labels[i], color=c[i], alpha = 0.2, edgecolor = c[i])
-    # plt.hist(also_bins, X, weights=counts, labels = labels, color = c) # Doesnt work
     plt.legend(loc='upper left')
 
 

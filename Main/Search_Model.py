@@ -29,7 +29,7 @@ def search_model(params, train_dataset, test_dataset, device) :
         elif(params["optimizer"].lower() == 'rmsprop'): optimizer = torch.optim.RMSprop(model.parameters(), lr=model.learning_rate)
         else : raise Exception("Invalid optimizer name: " + str(params["optimizer"]))
 
-        loss_function = torch.nn.CrossEntropyLoss() # Why not a hyper param?
+        loss_function = torch.nn.CrossEntropyLoss()
 
         baseModel = BaseModel(model, loss_function, optimizer) 
 

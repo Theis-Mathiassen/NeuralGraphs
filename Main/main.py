@@ -1,11 +1,6 @@
 # Constants
-EPOCHS = 150
-LEARNING_RATE = 0.01
 MANUAL_SEED = 12345
-HIDDEN_NODE_COUNT = 64
 DATASPLIT = 150
-BATCH_SIZE_TRAINING = 64
-BATCH_SIZE_TESTING = 64
 
 
 from heatmap import heatMap
@@ -55,7 +50,6 @@ torch.manual_seed(MANUAL_SEED)
 dataset = dataset.shuffle()
 
 #parameter grid - set of hyper parameters and values for grid_search to iterate over
-#0.75	5	0.01	150	10	9	SGD	sigmoid	sum
 
 param_grid = {
     'dropout_rate': [0.75],
@@ -75,9 +69,6 @@ grid_search(dataset, device, param_grid, DATASPLIT, 'test')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
-
-
-#HeatMap(subsampled_results) # Plot clustermap 
 
 #hyper_param = 'dropout_rate' # Hyper parameter to plot : 
 #grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
