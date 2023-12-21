@@ -63,9 +63,9 @@ param_grid = {
     'pooling_algorithm' : ['sum']  #'mean', 'sum', 'max'
 }
 
-#heatMap()
+heatMap()
 
-grid_search(dataset, device, param_grid, DATASPLIT, 'test')
+#grid_search(dataset, device, param_grid, DATASPLIT, 'test')
 #startingPoints = 20
 #iterations = 20
 #bayesian_search(dataset, device, param_grid, startingPoints, iterations, read_logs=False, Seed=0)
