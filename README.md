@@ -27,9 +27,17 @@ The hyperparameters can easily be adjusted for experimentation.
 <!-- - Can compare differnet hyperparameters (Revisit this if unable to complete) -->
 
 ## Getting Started
+This project utilises Python venv's to ensure an easy setup process.
+To install the required dependencies, complete the following steps:
 
-To use this project navigate to the [Main](/Main/main.py) file, which contains the essentials for the project. 
-After downloading it, it can be run and adjusted as desired.
+Located in the top-level-directory, write the following:
+1. python3 -m venv .venv
+2. source .venv/bin/activate
+3. pip install -r requirements.txt
+
+After this, the dependencies should be installed.
+To run the code, navigate to the [Main](/Main/main.py) file, which contains the essentials for the project. 
+Here different flags are available, which modify the control flow of the program, thereby enabling different features.
 
 ### Prerequisites
 To run this program it requires python, along with the following libraries.
