@@ -1,6 +1,7 @@
 from Classes import TrainData, TestData, BaseModel
 import numpy as np
 import torch
+from math import exp
 
 def train(model_env: BaseModel, data_loader, device):
     model_env.model.train()
@@ -45,7 +46,12 @@ def train(model_env: BaseModel, data_loader, device):
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
         for value in enumerate(arrayPred):
-            returnData.train_probability_estimates.append(value[1][1])
+            #returnData.train_probability_estimates.append(value[1][1])
+            softmax_positive_probability = exp(value[1][1]) / (exp(value[1][1]) + exp(value[1][0]))
+            returnData.train_probability_estimates.append(softmax_positive_probability)
+            
+            # print("AUROC scores: ")
+            # print(returnData.train_probability_estimates[-1])
 
     returnData.train_accuracies = (correct/len(data_loader.dataset))
     returnData.train_losses = (loss_/i)
@@ -83,7 +89,9 @@ def test(model_env: BaseModel, data_loader, device):
         # Turn output tensor into numpy array
         arrayPred = out.detach().cpu().numpy()
         for value in arrayPred:
-            returnData.test_probability_estimates.append(value[1])
+            #returnData.test_probability_estimates.append(value[1])
+            softmax_positive_probability = exp(value[1]) / (exp(value[1]) + exp(value[0]))
+            returnData.test_probability_estimates.append(softmax_positive_probability)
 
     returnData.test_accuracy = (correct/len(data_loader.dataset))
     returnData.test_losses = (loss_/ i)
