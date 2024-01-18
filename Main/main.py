@@ -16,7 +16,7 @@ DATASPLIT = 150
 PERFORM_GRID_SEARCH = True
 PERFORM_BAYESIAN = False
 DISPLAY_GRID_SEARCH_HEATMAP = False
-DISPLAY_GRID_SEARCH_GRAPHS= True
+DISPLAY_GRID_SEARCH_GRAPHS= False
 DISPLAY_HPO_COMPARISON = False
 
 #DISPLAY_BAYES_HIST = False
@@ -44,17 +44,16 @@ dataset = dataset.shuffle()
 
 # This is where the hyperparameters, and hyperparameters values for the parameter grid are defined
 param_grid = {
-    "dropout_rate": [0.75],
-    "hidden_channels": [5],
-    "learning_rate": [0.01],
-    "batch_size": [150],
-    "epochs": [10, 25, 50],
-    "amount_of_layers": [1, 3],
-    "optimizer": ["SGD"],
-    "activation_function": ["sigmoid"],
-    "pooling_algorithm": ["sum"],
+    'dropout_rate': [0.25, 0.50, 0.75],
+    'hidden_channels': ["INSERT OWN"],
+    'learning_rate': ["INSERT OWN"],
+    'batch_size' : [16, 32, 64, 150],
+    'epochs' : [10, 50, 100, 200],
+    'amount_of_layers' : [1, 2, 3, 9],
+    'optimizer' : ['SGD', 'adam', 'rmsprop'],        #String key   'SGD', 'adam', 'RMSprop'
+    'activation_function' : ['relu', 'sigmoid', 'tanh'], #'Relu', 'sigmoid', 'tanh'
+    'pooling_algorithm' : ['mean', 'sum']  #'mean', 'sum', 'max'
 }
-
 
 if PERFORM_GRID_SEARCH:
     grid_search(dataset, device, param_grid, DATASPLIT, "test")
