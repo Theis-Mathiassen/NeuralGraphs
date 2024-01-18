@@ -13,8 +13,8 @@ DATASPLIT = 150
 
 # Constants for control flow
 PERFORM_GRID_SEARCH = False
-PERFORM_BAYESIAN = False
-DISPLAY_GRID_SEARCH_HEATMAP = True
+PERFORM_BAYESIAN = True
+DISPLAY_GRID_SEARCH_HEATMAP = False
 DISPLAY_HPO_COMPARISON = False
 #DISPLAY_BAYES_HIST = False
 
@@ -45,8 +45,8 @@ param_grid = {
     "hidden_channels": [5],
     "learning_rate": [0.01],
     "batch_size": [150],
-    "epochs": [10],
-    "amount_of_layers": [9],
+    "epochs": [10, 50, 150],
+    "amount_of_layers": [1, 9],
     "optimizer": ["SGD"],
     "activation_function": ["sigmoid"],
     "pooling_algorithm": ["sum"],
