@@ -5,17 +5,20 @@ from Bayesian_Search import bayesian_search
 from torch_geometric.datasets import TUDataset
 from ReadCSV import GetParamData
 from Plot_func import GridBayesianComparison
-from PlotGridSearch import plot_auc_count 
+#from PlotGridSearch import plot_auc_count 
+from PlotGridSearch import plot_grid_search
 
 # Constants
 MANUAL_SEED = 12345
 DATASPLIT = 150
 
 # Constants for control flow
-PERFORM_GRID_SEARCH = False
-PERFORM_BAYESIAN = True
+PERFORM_GRID_SEARCH = True
+PERFORM_BAYESIAN = False
 DISPLAY_GRID_SEARCH_HEATMAP = False
+DISPLAY_GRID_SEARCH_GRAPHS= True
 DISPLAY_HPO_COMPARISON = False
+
 #DISPLAY_BAYES_HIST = False
 
 # Import MUTAG dataset
@@ -45,8 +48,8 @@ param_grid = {
     "hidden_channels": [5],
     "learning_rate": [0.01],
     "batch_size": [150],
-    "epochs": [10, 50, 150],
-    "amount_of_layers": [1, 9],
+    "epochs": [10, 25, 50],
+    "amount_of_layers": [1, 3],
     "optimizer": ["SGD"],
     "activation_function": ["sigmoid"],
     "pooling_algorithm": ["sum"],
@@ -64,6 +67,9 @@ if PERFORM_BAYESIAN:
 
 if DISPLAY_GRID_SEARCH_HEATMAP:
     heatMap()
+    
+if DISPLAY_GRID_SEARCH_GRAPHS:
+    plot_grid_search()
 
 if DISPLAY_HPO_COMPARISON:
     hyper_param = 'dropout_rate' # Hyper parameter to plot :

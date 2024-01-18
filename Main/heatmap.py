@@ -67,4 +67,4 @@ def heatMap():
     plt.show()
 
 
-heatMap()
+#heatMap()
