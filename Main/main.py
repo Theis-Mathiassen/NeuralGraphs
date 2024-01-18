@@ -15,11 +15,11 @@ MANUAL_SEED = 12345
 DATASPLIT = 150
 
 # Constants for control flow
-PERFORM_GRID_SEARCH = False
+PERFORM_GRID_SEARCH = True
 PERFORM_BAYESIAN = False
 DISPLAY_GRID_SEARCH_HEATMAP = False
 DISPLAY_GRID_SEARCH_GRAPHS= False
-DISPLAY_HPO_COMPARISON = True
+DISPLAY_HPO_COMPARISON = False
 DISPLAY_BAYESIAN_HISTOGRAM = False
 
 # Import MUTAG dataset
@@ -46,8 +46,8 @@ dataset = dataset.shuffle()
 # This is where the hyperparameters, and hyperparameters values for the parameter grid are defined
 param_grid = {
     'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': [9],
-    'learning_rate': [0.25],
+    'hidden_channels': [9], # Insert own
+    'learning_rate': [0.25], # Insert own
     'batch_size' : [16, 32, 64, 150],
     'epochs' : [10, 50, 100, 200],
     'amount_of_layers' : [1, 2, 3, 9],

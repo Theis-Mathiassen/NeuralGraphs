@@ -152,7 +152,7 @@ def GridBayesianComparison(gridParam, bayesParam, gridVal, bayesVal, parameter):
     ax1.scatter(X, gridParam, s=2.5, label='Grid', c='blue')
     ax1.scatter(X, bayesParam, s=2.5, label='Bayesian', c='red')
     ax1.set_xlabel('Number of iterations')
-    ax1.set_ylabel('Number of ' + parameter)
+    ax1.set_ylabel('Number of epochs')
     ax1.set_facecolor('lightgray')
     ax1.legend(loc='upper left')  # Adjust the location as needed
     ax1.set_title('Epochs over iterations')  # Set the subplot title
