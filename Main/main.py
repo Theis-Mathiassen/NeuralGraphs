@@ -7,19 +7,20 @@ from ReadCSV import GetParamData
 from Plot_func import GridBayesianComparison
 #from PlotGridSearch import plot_auc_count 
 from PlotGridSearch import plot_grid_search
+from Plot_func import GridBayesHist
+
 
 # Constants
 MANUAL_SEED = 12345
 DATASPLIT = 150
 
 # Constants for control flow
-PERFORM_GRID_SEARCH = True
+PERFORM_GRID_SEARCH = False
 PERFORM_BAYESIAN = False
 DISPLAY_GRID_SEARCH_HEATMAP = False
 DISPLAY_GRID_SEARCH_GRAPHS= False
-DISPLAY_HPO_COMPARISON = False
-
-#DISPLAY_BAYES_HIST = False
+DISPLAY_HPO_COMPARISON = True
+DISPLAY_BAYESIAN_HISTOGRAM = False
 
 # Import MUTAG dataset
 dataset = TUDataset(root="dataset/Mutag", name="MUTAG")
@@ -45,8 +46,8 @@ dataset = dataset.shuffle()
 # This is where the hyperparameters, and hyperparameters values for the parameter grid are defined
 param_grid = {
     'dropout_rate': [0.25, 0.50, 0.75],
-    'hidden_channels': ["INSERT OWN"],
-    'learning_rate': ["INSERT OWN"],
+    'hidden_channels': [9],
+    'learning_rate': [0.25],
     'batch_size' : [16, 32, 64, 150],
     'epochs' : [10, 50, 100, 200],
     'amount_of_layers' : [1, 2, 3, 9],
@@ -71,9 +72,9 @@ if DISPLAY_GRID_SEARCH_GRAPHS:
     plot_grid_search()
 
 if DISPLAY_HPO_COMPARISON:
-    hyper_param = 'dropout_rate' # Hyper parameter to plot :
+    hyper_param = 'epochs' # Hyper parameter to plot. Note: Change the y-label if you change the hyper_param!
     grid_data_p, grid_data_s, bayes_data_p, bayes_data_s = GetParamData(hyper_param,'roc', 75) # Get data
     GridBayesianComparison(grid_data_p, bayes_data_p, grid_data_s, bayes_data_s, hyper_param) # Plot data
 
-#if DISPLAY_BAYESIAN_HISTOGRAM:
-#    GridBayesHist()
+if DISPLAY_BAYESIAN_HISTOGRAM:
+    GridBayesHist()

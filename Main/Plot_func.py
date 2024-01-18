@@ -19,6 +19,7 @@ from ReadCSV import GetHistData
 
 
 
+
 # Used for prettier graph
 def AvgCalculator(data, numChunks):
     averageOfData = []
@@ -142,60 +143,81 @@ def HeatMap(data) :
 
 def GridBayesianComparison(gridParam, bayesParam, gridVal, bayesVal, parameter):
     fig, (ax1, ax2) = plt.subplots(1, 2)
-    fig.set_figheight(10)
-    fig.set_figwidth(14)
-    fig.suptitle(parameter)
-
+    fig.set_figheight(5)
+    fig.set_figwidth(10)
+    fig.suptitle("Comparing Grid Search and Bayesian Optimization Over Iterations")
 
     X = np.linspace(0, len(gridParam), len(gridParam))
-    print(X)
 
-    
-    
-    ax1.scatter(X, gridParam, s=2.5, label='grid', c='blue')
-    ax1.scatter(X, bayesParam, s=2.5, label='bayes', c='red')
-    ax1.set_xlabel('Permutation')
-    ax1.set_ylabel(parameter + 'value')
+    ax1.scatter(X, gridParam, s=2.5, label='Grid', c='blue')
+    ax1.scatter(X, bayesParam, s=2.5, label='Bayesian', c='red')
+    ax1.set_xlabel('Number of iterations')
+    ax1.set_ylabel('Number of ' + parameter)
     ax1.set_facecolor('lightgray')
-    ax1.legend()
+    ax1.legend(loc='upper left')  # Adjust the location as needed
+    ax1.set_title('Epochs over iterations')  # Set the subplot title
     ax1.grid()
 
-    ax2.scatter(X, gridVal, s = 3.5, label='grid', c='blue')
-    ax2.scatter(X, bayesVal, s = 3.5, label='bayes', c='red')
-    ax2.set_xlabel('Permutation')
-    ax2.set_ylabel('AUROC Value')
+    ax2.scatter(X, gridVal, s=3.5, label='Grid', c='blue')
+    ax2.scatter(X, bayesVal, s=3.5, label='Bayesian', c='red')
+    ax2.set_xlabel('Number of iterations')
+    ax2.set_ylabel('AUC-ROC Value')
     ax2.set_facecolor('lightgray')
-    ax2.legend()
+    ax2.legend(loc='lower left')  # Adjust the location as needed
+    ax2.set_title('AUC-ROC value over iterations')  # Set the subplot title
     ax2.grid()
 
+    plt.savefig('comparison')
+    plt.tight_layout()  # Adjust subplot parameters for better layout
     plt.show()
 
-def GridBayesHist() : 
-    fig1, ax1 = plt.subplots(2, 3, constrained_layout=True)
-    fig1.set_figheight(18)
-    fig1.set_figwidth(20)
-    fig1.tight_layout()
-    fig1.suptitle('Grid search development over iterations', fontsize=16)
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.ticker import MaxNLocator, FuncFormatter
 
-    fig2, ax2 = plt.subplots(2, 3, constrained_layout=True)
-    fig2.set_figheight(18)
-    fig2.set_figwidth(20)
-    fig2.tight_layout()
-    fig2.suptitle('Bayesian opt. development over iterations', fontsize=16)
-    i=0
-    j=0
+# Assume you have GetHistData and MakeHist functions defined
+
+def GridBayesHist():
+    def format_y_axis(value, pos):
+        return f"{int(value):,}"  # Format y-axis as integer with commas
+
+    fig1, ax1 = plt.subplots(3, 2, constrained_layout=True, figsize=(14, 8))
+    fig1.suptitle('Grid Search Development Over Iterations', fontsize=16)
+
+    fig2, ax2 = plt.subplots(3, 2, constrained_layout=True, figsize=(14, 8))
+    fig2.suptitle('Bayesian Optimization Development Over Iterations', fontsize=16)
+
+    i = 0
+    j = 0
 
     for count in [2, 10, 20, 50, 100, 500]:
         grid_data, bayes_data = GetHistData('roc', count)
-        index1 =  int(np.floor(i))
-        index2 = j % 3
+        index1 = int(np.floor(i))
+        index2 = j % 2
         MakeHist(grid_data, bayes_data, ax1[index1][index2], ax2[index1][index2])
-        i+=1/3
-        j+=1
+        i += 1 / 2
+        j += 1
 
-    fig1.subplots_adjust(left=0.045, bottom=0.048, right=0.971, top=0.943, wspace=0.121, hspace=0.105)
-    fig2.subplots_adjust(left=0.045, bottom=0.048, right=0.971, top=0.943, wspace=0.121, hspace=0.105)
+    fig1.subplots_adjust(left=0.045, bottom=0.048, right=0.971, top=0.9, wspace=0.2, hspace=0.3)
+    fig2.subplots_adjust(left=0.045, bottom=0.048, right=0.971, top=0.9, wspace=0.2, hspace=0.3)
+
+    for ax_row in ax1:
+        for ax in ax_row:
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Choose maximum number of ticks for y-axis
+            ax.yaxis.set_major_formatter(FuncFormatter(format_y_axis))  # Apply custom formatter to y-axis labels
+            ax.tick_params(axis='both', labelsize=8)  # Adjust label font size for better readability
+
+    for ax_row in ax2:
+        for ax in ax_row:
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))  # Choose maximum number of ticks for y-axis
+            ax.yaxis.set_major_formatter(FuncFormatter(format_y_axis))  # Apply custom formatter to y-axis labels
+            ax.tick_params(axis='both', labelsize=8)  # Adjust label font size for better readability
+
+    fig1.savefig('fig1.png')
+    fig2.savefig('fig2.png')
     plt.show()
+
+
 
 def MakeHist(gridROC, bayesROC, axgrid : axes,  axbayes : axes) : 
     counts1, bins1 = np.histogram(gridROC, bins=20)
